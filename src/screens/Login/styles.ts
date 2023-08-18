@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components'
 
+interface ButtonLoginProps {
+    load: boolean
+}
+
 export const Container = styled.div`
     background-color: ${({theme}) => theme.body};
     display: flex;
@@ -78,13 +82,15 @@ export const RecoverPassword = styled.div`
         justify-content: space-between;
         border-radius: 5px;
 
-        span {
+        button {
+            background-color: transparent;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-weight: bold;
+            
         }
 
         input {
@@ -178,6 +184,39 @@ export const ContentLogo = styled.div`
             margin-left: 5px;
         }
     }
+
+    div {
+        margin-top: 5px;
+        width: 20%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+
+        a {
+            transition: transform 0.2s;
+            background-color: ${props => props.theme.title};
+            margin: 5px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 0.300rem;
+            border-radius: 50%;
+
+            &:hover {
+                transform: scale(1.2);
+            }
+        }
+        a:first-child {
+            color: ${props => props.theme.red};
+            //box-shadow: 0.5px 0.5px 2px ${props => props.theme.red};
+        }
+        a:last-child {
+            color: ${props => props.theme['sidebar']};
+            //box-shadow: 0.5px 0.5px 2px ${props => props.theme['title']};
+        }
+    }
 `;
 
 export const ContentForm = styled.div`
@@ -260,10 +299,6 @@ export const FormLogin = styled.form`
     }
 `;
 
-
-interface ButtonLoginProps {
-    load: boolean
-}
 export const ButtonLogin = styled.button<ButtonLoginProps>`
     margin-top: 20px;
     background-color: ${props => props.theme.orange};
@@ -273,7 +308,7 @@ export const ButtonLogin = styled.button<ButtonLoginProps>`
     cursor: ${ props => props.load ? 'not-allowed' : 'pointer' };
 `;
 
-export const StyledLinkButton = styled(Link)<ButtonLoginProps>`
+export const StyledLinkButton = styled(Link)`
     border-radius: 4px;
     height: 2.5rem;
     display: flex;
@@ -286,6 +321,5 @@ export const StyledLinkButton = styled(Link)<ButtonLoginProps>`
     background-color: ${props => props.theme.title};
     color: ${props => props.theme.sidebar};
 
-    cursor: ${ props => props.load ? 'not-allowed' : 'pointer' };
 `;
 

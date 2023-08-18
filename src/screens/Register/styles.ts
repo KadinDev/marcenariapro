@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 export const Container = styled.div`
     background-color: ${({theme}) => theme.body};
@@ -122,11 +122,16 @@ export const FormRegister = styled.form`
     }
 `;
 
-export const ButtonRegister = styled.button`
+interface ButtonLoginProps {
+    load: boolean
+}
+export const ButtonRegister = styled.button<ButtonLoginProps>`
     margin-top: 20px;
     background-color: ${props => props.theme.orange};
     color: ${props => props.theme.sidebar};
     text-shadow: 0 1px 5px ${props => props.theme.title};
+
+    cursor: ${ props => props.load ? 'not-allowed' : 'pointer' };
 `;
 
 export const StyledLinkButton = styled(Link)`
@@ -142,3 +147,5 @@ export const StyledLinkButton = styled(Link)`
         opacity: 1;
     }
 `;
+
+

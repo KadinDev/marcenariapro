@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useContext, FormEvent} from 'react'
 
 import {
     Container,
@@ -7,21 +7,27 @@ import {
     ContentForm,
     FormRegister,
     ButtonRegister,
-    StyledLinkButton
+    StyledLinkButton,
 } from './styles'
 
 import logo from '../../assets/logoblack.png'
 import { InputForm } from '../../components/InputForm'
+import { Load } from '../../components/Load'
+import { toast } from 'react-toastify'
 
 import { 
     AiOutlineEye, 
-    AiOutlineEyeInvisible, 
+    AiOutlineEyeInvisible,
+    AiOutlineLoading
 } from 'react-icons/ai'
 
 import { MdVerified } from 'react-icons/md'
+import { AuthContext } from '../../contexts/auth'
 
 export function Register(){
-    const titlePage = 'Marcenaria Pro';
+    const titlePage = 'Marcenaria Pro'
+
+    const { signUp, isLogging } = useContext(AuthContext)
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -43,8 +49,25 @@ export function Register(){
         setConfirmViewPassword(!viewConfirmPassword)
     }
 
-    function handleRegister(){
-        console.log('')
+    function handleRegister(e: FormEvent){
+        e.preventDefault()
+        if(!name || !email || !password){
+            toast.error('Preencha todos os campos!')
+            return
+        }
+        if(email !== confirmEmail){
+            toast.error('Confira se os emails estão iguais!')
+            return
+        }
+        if(password !== confirmPassword){
+            toast.error('Senhas diferentes!')
+            return
+        }
+        if(password.length < 6){
+            toast.error('Senha no mínimo com 6 caracteres!')
+            return
+        }
+        signUp(name, email, password)
     }
 
     return (
@@ -64,21 +87,18 @@ export function Register(){
                         <InputForm
                             type='text'
                             placeholder='Nome Marceneiro (ou marcenaria)'
-                            required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                         <InputForm
                             type='email'
                             placeholder='Email'
-                            required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <InputForm
                             type='email'
                             placeholder='Confirme o email'
-                            required
                             value={confirmEmail}
                             onChange={(e) => setConfirmEmail(e.target.value)}
                         />
@@ -86,7 +106,6 @@ export function Register(){
                             <InputForm
                                 type={viewPassword ? 'text' : 'password'}
                                 placeholder='Senha'
-                                required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -104,7 +123,6 @@ export function Register(){
                             <InputForm
                                 type={viewConfirmPassword ? 'text' : 'password'}
                                 placeholder='Confirme a senha'
-                                required
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmsetPassword(e.target.value)}
                             />
@@ -120,8 +138,16 @@ export function Register(){
                         </div>
                         <ButtonRegister
                             type='submit'
+                            load={isLogging} 
+                            disabled={isLogging}
                             onClick={handleRegister}
-                        > Pagar e Cadastrar </ButtonRegister>
+                        > 
+                            {isLogging ? (
+                                <Load/>
+                            ) : (
+                                <p>cadastrar</p>
+                            )}
+                        </ButtonRegister>
                         
                         <StyledLinkButton to="/">
                             Já tem uma conta? faça login

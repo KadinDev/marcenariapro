@@ -1,3 +1,4 @@
+import {useContext, useState} from 'react'
 
 import {
     Container,
@@ -21,6 +22,11 @@ import { generateUniqueID } from '../../utils/GenerateUniqueID'
 import { defaultTheme } from '../../styles/themes'
 import { FaUsers } from "react-icons/fa";
 
+import { AuthContext } from '../../contexts/auth'
+import { collection, getFirestore, addDoc } from 'firebase/firestore'
+import { toast } from 'react-toastify'
+import { Load } from '../../components/Load'
+
 const newClientFormSchema = z.object({
     name: z.string(),
     city: z.string(),
@@ -31,7 +37,7 @@ const newClientFormSchema = z.object({
 type NewClientFormInputs = z.infer<typeof newClientFormSchema>
 
 export interface ExistingClientData {
-    id: string;
+    clientId: string;
     name: string;
     city: string;
     address: string;
@@ -45,6 +51,8 @@ type NewClientModalProps = {
 }
 
 export function NewClientModal( {existingClientData, closeModal} : NewClientModalProps ){
+    const { user } = useContext(AuthContext)
+    const [loadClient, setLoadClient] = useState(false)
 
     const {
         register,
@@ -55,6 +63,7 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
         resolver: zodResolver(newClientFormSchema)
     })
 
+    /*
     // criar ou editar cliente
     async function handleCreateOrUpdateClient(data: NewClientFormInputs){
         //const {address, city, contact, name} = data
@@ -75,6 +84,47 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
         
         reset()
         closeModal()
+    }
+    */
+    async function handleCreateOrUpdateClient( data : NewClientFormInputs ){
+        const { name, city, address, contact } = data
+        
+        setLoadClient(true)
+
+        try {
+            const firestore = getFirestore()
+
+            if(existingClientData?.clientId){
+                console.log(data)
+            } else {
+                const newClient = {
+                    id: generateUniqueID(),
+                    name,
+                    city,
+                    address,
+                    contact,
+                    date: Date.now(),
+                }
+                const clientData = {
+                    ...newClient,
+                    userId: user?.id
+                }
+
+                const clientsCollectionRef = collection(firestore, 'clients')
+                await addDoc(clientsCollectionRef, clientData)
+                toast.success('Cliente adicionado!')
+            }
+
+            reset()
+            closeModal()
+            setLoadClient(false)
+
+        } catch (error) {
+            console.log(error)
+
+            toast.error('Não foi possível adicionar seu cliente!')
+            setLoadClient(false)
+        }
     }
 
     async function handleDeleteClient(client : string){
@@ -142,8 +192,8 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
                         <Register 
                             type='submit'
                             disabled={isSubmitted}
-                        >
-                            cadastrar
+                        >   
+                            {loadClient ? <Load/> : 'cadastrar' }
                         </Register>
 
                     ) : (
@@ -156,7 +206,7 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
                             </Updated>
 
                             {existingClientData && (
-                                <Delete type="button" onClick={() => handleDeleteClient(existingClientData.id)}>
+                                <Delete type="button" onClick={() => handleDeleteClient(existingClientData.clientId)}>
                                     Deletar
                                 </Delete>
                             )}

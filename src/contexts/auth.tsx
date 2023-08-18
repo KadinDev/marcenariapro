@@ -14,14 +14,20 @@ import {
     sendPasswordResetEmail
 } from 'firebase/auth'
 
-import { getDoc, doc, getFirestore } from 'firebase/firestore'
+import { 
+    getDoc, 
+    doc, 
+    getFirestore, 
+    setDoc 
+} from 'firebase/firestore'
 
 type AuthContextData = {
     signIn: ( email: string, password: string ) => Promise<void>;
-    //signUp: ( name: string, email: string, password: string ) => Promise<void>;
+    signUp: ( name: string, email: string, password: string ) => Promise<void>;
     signOutUser: () => Promise<void>;
-    //forgotPassword: (email : string) => Promise<void>;
+    forgotPassword: (email : string) => Promise<void>;
     isLogging: boolean;
+    isLoggingRecoverPass: boolean;
     user: User | null;
 }
 
@@ -41,6 +47,7 @@ export const AuthContext = createContext( {} as AuthContextData )
 export function AuthProvider( {children} : AuthProviderProps ){
     
     const [isLogging, setIsLogging] = useState(false)
+    const [isLoggingRecoverPass, setIsLoggingRecoverPass] = useState(false)
     const [user, setUser] = useState<User | null>(null)
 
     useEffect(() => {
@@ -99,15 +106,74 @@ export function AuthProvider( {children} : AuthProviderProps ){
         setUser(null)
     }
     
+    async function signUp(
+        name: string, email: string, password: string
+    ){
+        setIsLogging(true)
 
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+            const user = userCredential.user
+
+            // Inicialize o Firestore
+            const firestore = getFirestore()
+
+            // Adicionando os dados do novo usuário ao Firestore
+            const userDocRef = doc(firestore, 'users', user.uid)
+            const userData = {
+                id: user.uid,
+                name: name,
+                email: email,
+                avatarUrl: '',
+                contact: '',
+                cnpjOrcpf: '',
+                address: '',
+                site: '',
+                instagram: '',
+                facebook: '',
+                about: '',
+                createdUser: new Date(),
+            }
+            // passe o novo usuario para o documento 'users'
+            await setDoc(userDocRef, userData)
+
+            setUser(userData)
+            localStorage.setItem(MARCENARIA_COLLECTION, JSON.stringify(userData))
+            toast.success(`Cadastro realizado com sucesso para ${name}`)
+            setIsLogging(false)
+
+        } catch (error) {
+            toast.error('Email já cadastrado, tente outro!')
+            setIsLogging(false)
+        }
+    }
+
+    async function forgotPassword(email: string){
+        if(!email){
+            toast.error('Informe um email.')
+            return
+        }
+        setIsLoggingRecoverPass(true)
+        try {
+            await sendPasswordResetEmail(auth, email)
+            toast.success('Um email de redefinição de senha foi enviado, aguarde alguns instantes.')
+            setIsLoggingRecoverPass(false)
+        } catch (error) {
+            toast.error('Ocorreu um erro ao enviar o email de redefinição de senha. Verifique o endereço de email informado.')
+            setIsLoggingRecoverPass(false)
+        }
+    }
     
     return (
         <AuthContext.Provider
             value={{
                 user,
                 isLogging,
+                isLoggingRecoverPass,
                 signIn,
-                signOutUser
+                signOutUser,
+                signUp,
+                forgotPassword
             }}
         >
             { children }

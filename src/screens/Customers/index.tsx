@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import {
     Container,
@@ -10,28 +10,39 @@ import {
 import {BsPersonFillAdd, BsInfo} from 'react-icons/bs'
 import {defaultTheme} from '../../styles/themes'
 
-import {clientes} from '../../utils/testes'
 import { phoneFormatter } from '../../utils/Formatted'
 import { NewClientModal, ExistingClientData } from '../../components/NewClienteModal'
 import { ModalComponent } from '../../components/Modal'
 import { SearchForm } from '../../components/SearchForm'
+import { Load } from '../../components/Load'
+
+import { AuthContext } from '../../contexts/auth'
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    getFirestore
+} from 'firebase/firestore'
 
 import Modal from 'react-modal'
 Modal.setAppElement('#root')
-
 
 interface AddressProps {
     address: string;
     maxLength: number;
 }
 
-
 export function Customers(){
+    const { user } = useContext(AuthContext)
+    
     const linkContact = 'https://wa.me/55'
     const titlePage = 'Marcenaria | ';
-
     const [searchText, setSearchText] = useState('')
-    const [filteredClientes, setFilteredClientes] = useState(clientes)
+    const [loading, setLoading] = useState(true)
+ 
+    const [clients, setClients] = useState<ExistingClientData[]>([])
+    const [filteredClientes, setFilteredClientes] = useState(clients)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedClient, setSelectedClient] = useState<ExistingClientData | null>(null)
 
@@ -40,19 +51,39 @@ export function Customers(){
     },[]);
     
     useEffect(() => {
-        const filteredClientes = clientes.filter(cliente =>
+        async function loadClients(){
+            setLoading(true)
+
+            const firestore = getFirestore()
+            const userClientsCollectionRef = collection(firestore, 'clients')
+            const querySnapshot = await getDocs(query(userClientsCollectionRef, where('userId', '==', user?.id )))
+            
+            const loadClients: ExistingClientData[] = []
+            querySnapshot.forEach((doc) => {
+                loadClients.push({ clientId: doc.id, ...doc.data() } as ExistingClientData )
+            })
+
+            setClients(loadClients)
+            setLoading(false)
+        }
+        loadClients()
+    },[])
+
+    useEffect(() => {
+        const filteredClientes = clients.filter(cliente =>
             cliente.name.toLowerCase().includes(searchText.toLowerCase())
         )
         // ordem alfabética
         filteredClientes.sort( (a, b) => a.name.localeCompare(b.name) )
 
         setFilteredClientes(filteredClientes)
-    },[searchText])
+
+
+    },[searchText, clients])
 
 
     function AddressLimiteClient({ address, maxLength } : AddressProps){
         const truncatedAddress = address.length > maxLength ? `${address.slice(0, maxLength)}...` : address;
-
         return <td>{truncatedAddress}</td>;
     }
     
@@ -68,7 +99,7 @@ export function Customers(){
     }
 
     function openModalWithClient(client : ExistingClientData){
-        if(client.id){
+        if(client.clientId){
             setSelectedClient(client)
         } else {
             setSelectedClient(null)
@@ -107,63 +138,67 @@ export function Customers(){
                 value={searchText}
             />
 
-            <TableContainer>
-                <p> {filteredClientes.length} clientes </p>
+            { loading ? (
+                <Load/>
+            ) : (
+                <TableContainer>
+                    <p> {filteredClientes.length} clientes </p>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th> Nome </th>
-                                <th> Endereço </th>
-                                <th> Contato </th>
-                                <th> </th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody>
-                            {filteredClientes.map(client => {
-                                return (
-                                    <tr key={Number(client.id)}>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th> Nome </th>
+                                    <th> Endereço </th>
+                                    <th> Contato </th>
+                                    <th> </th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                {filteredClientes.map(client => {
+                                    return (
+                                        <tr key={client.clientId}>
 
-                                        <td> {client.name} </td>
+                                            <td> {client.name} </td>
 
-                                        <AddressLimiteClient 
-                                            address={client.address} 
-                                            maxLength={37}
-                                        />
+                                            <AddressLimiteClient 
+                                                address={client.address} 
+                                                maxLength={37}
+                                            />
 
-                                        {/* <td> {client.address} </td> */}
+                                            {/* <td> {client.address} </td> */}
 
-                                        <td>
-                                            <a href={`${linkContact}${client.contact}`} target='_blank'> 
-                                                {phoneFormatter(client.contact)} 
-                                            </a>
-                                        </td>
-                                    
-                                        {/* 
-                                        <td>
-                                            { dateFormatter.format(new Date(client.date)) }
-                                        </td>
-                                        */}
+                                            <td>
+                                                <a href={`${linkContact}${client.contact}`} target='_blank'> 
+                                                    {phoneFormatter(client.contact.toString())} 
+                                                </a>
+                                            </td>
                                         
-                                        <td>
-                                            <button onClick={() => 
-                                                openModalWithClient({...client, contact: parseInt(client.contact)})} >
-                                                <BsInfo
-                                                    size={25}
-                                                    color={defaultTheme['orange-dark']}
-                                                />
-                                            </button>
+                                            {/* 
+                                            <td>
+                                                { dateFormatter.format(new Date(client.date)) }
+                                            </td>
+                                            */}
+                                            
+                                            <td>
+                                                <button onClick={() => 
+                                                    openModalWithClient({...client, contact: parseInt(client.contact.toString())})} >
+                                                    <BsInfo
+                                                        size={25}
+                                                        color={defaultTheme['orange-dark']}
+                                                    />
+                                                </button>
 
-                                        </td>
+                                            </td>
 
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
 
-                    </table>
-            </TableContainer>
+                        </table>
+                </TableContainer>
+            ) }
 
             
         </Container>

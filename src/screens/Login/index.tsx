@@ -23,11 +23,17 @@ import {
 } from 'react-icons/ai'
 
 import { MdVerified } from 'react-icons/md'
+import { AiOutlineInstagram, AiOutlineWhatsApp } from 'react-icons/ai'
+import { Load } from '../../components/Load'
 import { AuthContext } from '../../contexts/auth'
 
 export function Login(){
-    
-    const { signIn, isLogging } = useContext(AuthContext)
+    const { 
+        signIn, 
+        isLogging,
+        isLoggingRecoverPass, 
+        forgotPassword 
+    } = useContext(AuthContext)
 
     const titlePage = 'Marcenaria Pro';
 
@@ -52,6 +58,10 @@ export function Login(){
         setRecoverPassword('')
     }
 
+    function handleRecoverPassword(){
+        forgotPassword(recoverPassword)
+    }
+
     function handleLogin(e : FormEvent){
         e.preventDefault()
         signIn(email, password)
@@ -61,7 +71,7 @@ export function Login(){
         <Container>
             
             { isPasswordModalOpen && 
-                <RecoverPassword>
+                <RecoverPassword >
                     <div>
                         <span onClick={handleCloseModalRecoverPassword}>
                             <AiOutlineClose size={20} />
@@ -69,13 +79,19 @@ export function Login(){
                         <InputForm
                             type='email'
                             placeholder='Email'
-                            required
                             value={recoverPassword}
                             onChange={(e) => setRecoverPassword(e.target.value)}
                         />
-                        <span onClick={() => alert('Recuperar Senha')} >
-                            <AiOutlineSend size={20} />
-                        </span>
+                        <button 
+                            onClick={handleRecoverPassword}
+                            disabled={isLoggingRecoverPass}
+                        >
+                            {isLoggingRecoverPass ? (
+                                <Load/>
+                            ) : (
+                                <AiOutlineSend size={20} />
+                            )}
+                        </button>
                     </div>
                 </RecoverPassword>
             }
@@ -93,7 +109,18 @@ export function Login(){
                         Veja por dentro do Marcenaria Pro
                         <AiFillYoutube size={20} />
                     </span>
+                    {/* depois pegar no db o numero de marcenarias cadastradas */}
                     <p>Aprovado por mais de 250 marcenarias</p>
+                    <div>
+                        <a href="https://www.instagram.com/marcenariapro2023/" target='_blank'>
+                            <AiOutlineInstagram size={18} />
+                        </a>
+                        {/* 
+                        <a href="https://wa.me/5588996960239" target='_blank'>
+                            <AiOutlineWhatsApp size={18} />
+                        </a>
+                        */}
+                    </div>
                 </ContentLogo>
 
                 <ContentForm>
@@ -126,9 +153,13 @@ export function Login(){
                         <ButtonLogin 
                             type='submit' 
                             load={isLogging} 
-                            disabled={isLogging}    
+                            disabled={isLogging} 
                         > 
-                            {isLogging ? 'Entrando' : 'Entrar'}
+                            {isLogging ? (
+                                <Load/>
+                            ) : (
+                                <p>entrar</p>
+                            )}
                         </ButtonLogin>
                         
                         <span onClick={() => setIsPasswordModalOpen(true) }>
@@ -137,7 +168,6 @@ export function Login(){
                         
                         <StyledLinkButton 
                             to="/register"
-                            load={isLogging} 
                         >
                             criar conta
                         </StyledLinkButton>
