@@ -7,7 +7,7 @@ import {
     TableContainer,
 } from './styles'
 
-import {BsPersonFillAdd, BsInfo} from 'react-icons/bs'
+import {BsPersonFillAdd, BsInfo, BsArrowLeft, BsArrowRight, BsFillPeopleFill} from 'react-icons/bs'
 import {defaultTheme} from '../../styles/themes'
 
 import { phoneFormatter } from '../../utils/Formatted'
@@ -46,29 +46,37 @@ export function Customers(){
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedClient, setSelectedClient] = useState<ExistingClientData | null>(null)
 
+    const [currentPage, setCurrentPage] = useState(1)
+    const clientsPerPage = 5
+
     useEffect(() => {
         document.title = `${titlePage} Clientes`
     },[]);
     
+
+    // Carregamento de clientes
+    async function loadClients(){
+        setLoading(true)
+
+        const firestore = getFirestore()
+        const userClientsCollectionRef = collection(firestore, 'clients')
+        const querySnapshot = await getDocs(query(userClientsCollectionRef, where('userId', '==', user?.id )))
+        
+        const loadClients: ExistingClientData[] = []
+        querySnapshot.forEach((doc) => {
+            loadClients.push({ clientId: doc.id, ...doc.data() } as ExistingClientData )
+        })
+
+        setClients(loadClients)
+        setLoading(false)
+    }
     useEffect(() => {
-        async function loadClients(){
-            setLoading(true)
-
-            const firestore = getFirestore()
-            const userClientsCollectionRef = collection(firestore, 'clients')
-            const querySnapshot = await getDocs(query(userClientsCollectionRef, where('userId', '==', user?.id )))
-            
-            const loadClients: ExistingClientData[] = []
-            querySnapshot.forEach((doc) => {
-                loadClients.push({ clientId: doc.id, ...doc.data() } as ExistingClientData )
-            })
-
-            setClients(loadClients)
-            setLoading(false)
-        }
         loadClients()
     },[])
-
+    
+    
+    // carregamento pelo filtro e carregamento de clientes acima
+    // passado para a const: clients
     useEffect(() => {
         const filteredClientes = clients.filter(cliente =>
             cliente.name.toLowerCase().includes(searchText.toLowerCase())
@@ -77,16 +85,21 @@ export function Customers(){
         filteredClientes.sort( (a, b) => a.name.localeCompare(b.name) )
 
         setFilteredClientes(filteredClientes)
+        
+        // Atualize também a página atual se a filtragem afetar a exibição
+        setCurrentPage(1) // Volte para a página 1 após cada filtragem
+    }, [searchText, clients])
 
 
-    },[searchText, clients])
-
+    // Renderiza apenas os clientes da página atual
+    const indexOfLastClient = currentPage * clientsPerPage
+    const indexOfFirstClient = indexOfLastClient - clientsPerPage
+    const currentClients = filteredClientes.slice(indexOfFirstClient, indexOfLastClient)
 
     function AddressLimiteClient({ address, maxLength } : AddressProps){
         const truncatedAddress = address.length > maxLength ? `${address.slice(0, maxLength)}...` : address;
         return <td>{truncatedAddress}</td>;
     }
-    
 
     function openModal(){
         setIsModalOpen(true)
@@ -116,7 +129,8 @@ export function Customers(){
             >   
                 <NewClientModal 
                     existingClientData={selectedClient || undefined } 
-                    closeModal={closeModal} 
+                    closeModal={closeModal}
+                    loadClients={loadClients}
                 />
             </ModalComponent>
 
@@ -139,64 +153,86 @@ export function Customers(){
             />
 
             { loading ? (
-                <Load/>
+                <div style={{textAlign: 'center', fontSize: 30}} >
+                    <Load/>
+                </div>
             ) : (
                 <TableContainer>
                     <p> {filteredClientes.length} clientes </p>
 
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th> Nome </th>
-                                    <th> Endereço </th>
-                                    <th> Contato </th>
-                                    <th> </th>
-                                </tr>
-                            </thead>
-                            
-                            <tbody>
-                                {filteredClientes.map(client => {
-                                    return (
-                                        <tr key={client.clientId}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th> Nome </th>
+                                <th> Endereço </th>
+                                <th> Contato </th>
+                                <th> </th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            {currentClients.map(client => {
+                                return (
+                                    <tr key={client.clientId}>
 
-                                            <td> {client.name} </td>
+                                        <td> {client.name} </td>
 
-                                            <AddressLimiteClient 
-                                                address={client.address} 
-                                                maxLength={37}
-                                            />
+                                        <AddressLimiteClient 
+                                            address={client.address} 
+                                            maxLength={37}
+                                        />
 
-                                            {/* <td> {client.address} </td> */}
+                                        {/* <td> {client.address} </td> */}
 
-                                            <td>
-                                                <a href={`${linkContact}${client.contact}`} target='_blank'> 
-                                                    {phoneFormatter(client.contact.toString())} 
-                                                </a>
-                                            </td>
+                                        <td>
+                                            <a href={`${linkContact}${String(client.contact).replace(/[()\s-]/g, '')}`} target='_blank'>
+                                                {phoneFormatter(String(client.contact))}
+                                            </a>
+                                        </td>
+                                    
+                                        {/* 
+                                        <td>
+                                            { dateFormatter.format(new Date(client.date)) }
+                                        </td>
+                                        */}
                                         
-                                            {/* 
-                                            <td>
-                                                { dateFormatter.format(new Date(client.date)) }
-                                            </td>
-                                            */}
-                                            
-                                            <td>
-                                                <button onClick={() => 
-                                                    openModalWithClient({...client, contact: parseInt(client.contact.toString())})} >
-                                                    <BsInfo
-                                                        size={25}
-                                                        color={defaultTheme['orange-dark']}
-                                                    />
-                                                </button>
+                                        <td>
+                                            <button onClick={() => 
+                                                openModalWithClient({...client, contact: parseInt(client.contact.toString())})} >
+                                                <BsInfo
+                                                    size={25}
+                                                    color={defaultTheme['orange-dark']}
+                                                />
+                                            </button>
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
 
-                        </table>
+                    </table>
+
+                    <div className="pagination-buttons">
+                        <div className="buttons">
+                            <button
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                <BsArrowLeft size={20}/>
+                            </button>
+                            <BsFillPeopleFill size={20} />
+                            <button
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentClients.length < clientsPerPage}
+                            >
+                                <BsArrowRight size={20}/>
+                            </button>
+                        </div>
+                    </div>
+
+
                 </TableContainer>
             ) }
 

@@ -87,8 +87,7 @@ export const TableContainer = styled.div`
         right: 20px;
         top: 10px;
         font-weight: 600;
-        background-color: ${({theme}) => theme.title};
-        color: ${({theme}) => theme.sidebar};
+        color: ${({theme}) => theme.placeholder};
         text-transform: uppercase;
         font-size: 0.875rem;
         font-weight: 400;
@@ -184,6 +183,38 @@ export const TableContainer = styled.div`
             
         }
 
+    }
+
+    .pagination-buttons {
+        height: 2.5rem;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .buttons {
+        width: 12.5rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+
+        button {
+            background-color: transparent;
+
+            &:disabled {
+                svg {
+                    color: ${props => props.theme.placeholder};
+                    cursor: not-allowed;
+                }
+            }
+
+            svg {
+                color: ${props => props.theme.title};
+            }
+        }
     }
 `;
 

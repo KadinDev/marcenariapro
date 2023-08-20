@@ -3,6 +3,7 @@ LOGIN = OK
 RECUPERAR SENHA = OK
 REGISTER = OK
 
+CONSTATOS = Falta somente a parte de mostrar o contato no modal
 
 * REGISTER = FALTA PAGAMENTO STRIPE
 

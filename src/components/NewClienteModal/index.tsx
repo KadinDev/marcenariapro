@@ -23,9 +23,16 @@ import { defaultTheme } from '../../styles/themes'
 import { FaUsers } from "react-icons/fa";
 
 import { AuthContext } from '../../contexts/auth'
-import { collection, getFirestore, addDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { Load } from '../../components/Load'
+import { 
+    collection, 
+    getFirestore, 
+    addDoc, 
+    doc, 
+    updateDoc,
+    deleteDoc
+} from 'firebase/firestore'
 
 const newClientFormSchema = z.object({
     name: z.string(),
@@ -48,9 +55,10 @@ export interface ExistingClientData {
 type NewClientModalProps = {
     existingClientData?: ExistingClientData;
     closeModal: () => void;
+    loadClients: () => void;
 }
 
-export function NewClientModal( {existingClientData, closeModal} : NewClientModalProps ){
+export function NewClientModal( {existingClientData, closeModal, loadClients} : NewClientModalProps ){
     const { user } = useContext(AuthContext)
     const [loadClient, setLoadClient] = useState(false)
 
@@ -63,40 +71,41 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
         resolver: zodResolver(newClientFormSchema)
     })
 
-    /*
-    // criar ou editar cliente
-    async function handleCreateOrUpdateClient(data: NewClientFormInputs){
-        //const {address, city, contact, name} = data
-        if (existingClientData?.id){
-            console.log(`${data.name} do ID ${existingClientData.id} ATUALIZADO`)
-            console.log(data)
-        } else {
-            const newClient = {
-                id: generateUniqueID(),
-                name: data.name,
-                city: data.city,
-                address: data.address,
-                contact: data.contact,
-                date: Date.now()
-            }
-            console.log(newClient)
-        }
-        
-        reset()
-        closeModal()
-    }
-    */
     async function handleCreateOrUpdateClient( data : NewClientFormInputs ){
         const { name, city, address, contact } = data
-        
         setLoadClient(true)
 
         try {
             const firestore = getFirestore()
 
+            // ATUALIZAR CLIENTE
             if(existingClientData?.clientId){
-                console.log(data)
-            } else {
+                try {
+                    const firestore = getFirestore()
+                    const updatedClientData = {
+                        name,
+                        city,
+                        address,
+                        contact
+                    }
+
+                    // id do cliente que será atualizado
+                    const clientDocRef = doc(firestore, 'clients', existingClientData.clientId)
+                    // atualizar o cliente acima que peguei o id, e passando as novas info(updatedClientData)
+                    await updateDoc(clientDocRef, updatedClientData)
+
+                    toast.success('Cliente atualizado com sucesso!')
+                    closeModal()
+                    loadClients() //Minha função que carrega a lista de clientes
+                    setLoadClient(false)
+
+                } catch (error) {
+                    toast.error('Não foi possível atualizar seu cliente!')
+                    setLoadClient(false)
+                } 
+            } 
+            // CRIAR NOVO CLIENTE
+            else {
                 const newClient = {
                     id: generateUniqueID(),
                     name,
@@ -107,7 +116,7 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
                 }
                 const clientData = {
                     ...newClient,
-                    userId: user?.id
+                    userId: user?.id //ID do user logado
                 }
 
                 const clientsCollectionRef = collection(firestore, 'clients')
@@ -117,20 +126,35 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
 
             reset()
             closeModal()
+            loadClients() // minha função vinda de Customers(que carrega os clientes)
             setLoadClient(false)
 
         } catch (error) {
-            console.log(error)
-
             toast.error('Não foi possível adicionar seu cliente!')
             setLoadClient(false)
         }
     }
 
-    async function handleDeleteClient(client : string){
-        console.log('cliente deletado', client)
+    async function handleDeleteClient(id : string){
+        setLoadClient(true)
+
+        try {
+            const firestore = getFirestore()
+            const clientDocRef = doc(firestore, 'clients', id)
+
+            await deleteDoc(clientDocRef)
+
+            toast.success('Cliente excluido com sucesso!')
+            closeModal()
+            loadClients()
+            setLoadClient(true)
+
+        } catch (error) {
+            toast.error('Não foi possível excluir o cliente.')
+        }
     }
 
+    
     return (
         <Container>
             <ContentForm>
@@ -138,14 +162,15 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
                 {existingClientData && (
                     <ExistingClient>
                         <h3>Informações do Cliente</h3>
-                        <p> <span>Nome:</span> {existingClientData.name}</p>
-                        <p> <span>Cidade:</span> {existingClientData.city}</p>
-                        <p> <span>Endereço:</span> {existingClientData.address}</p>
-                        <p> <span>Contato:</span> { phoneFormatter(String(existingClientData.contact))}</p>
-                        <p> <span>Cadastrado em:</span> { dateFormatter.format(existingClientData.date)} </p>
+                        <p> <span>Nome:</span>{existingClientData.name}</p>
+                        <p> <span>Cidade:</span>{existingClientData.city}</p>
+                        <p> <span>Endereço:</span>{existingClientData.address}</p>
+                        <p> <span>Contato:</span>{phoneFormatter(String(existingClientData.contact))}</p>
+                        <p> <span>Cadastrado em:</span>{ dateFormatter.format(existingClientData.date)} </p>
                         
                     </ExistingClient>
                 )}
+
 
                 <HeaderForm>
                     <FaUsers size={24} color={defaultTheme['orange-dark']} />
@@ -202,12 +227,12 @@ export function NewClientModal( {existingClientData, closeModal} : NewClientModa
                                 type='submit'
                                 disabled={isSubmitted}
                             >
-                                atualizar
+                                {loadClient ? <Load/> : 'atualizar' }
                             </Updated>
 
                             {existingClientData && (
                                 <Delete type="button" onClick={() => handleDeleteClient(existingClientData.clientId)}>
-                                    Deletar
+                                    {loadClient ? <Load/> : 'deletar' }
                                 </Delete>
                             )}
                             
