@@ -33,7 +33,16 @@ type AuthContextData = {
 
 type User = {
     id: string;
+    avatarUrl?: string;
     name: string;
+    email?: string;
+    contact: string;
+    cnpjOrcpf: string;
+    address: string;
+    site?: string;
+    instagram?: string;
+    facebook?: string;
+    about?: string;
 }
 
 type AuthProviderProps = {

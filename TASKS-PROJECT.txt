@@ -2,6 +2,7 @@
 LOGIN = OK
 RECUPERAR SENHA = OK
 REGISTER = OK
+FINAÇAS = OK
 
 CONSTATOS = Falta somente a parte de mostrar o contato no modal
 

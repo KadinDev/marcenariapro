@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useContext} from 'react'
 
 import {
     Container,
@@ -17,7 +17,8 @@ import {
     FaArrowCircleLeft, 
     FaArrowCircleRight,
     FaArrowCircleUp,
-    FaArrowCircleDown 
+    FaArrowCircleDown,
+    FaTrash
 } from 'react-icons/fa';
 import { defaultTheme } from '../../styles/themes';
 
@@ -26,25 +27,49 @@ import { ModalComponent } from '../../components/Modal'
 import Modal from 'react-modal'
 Modal.setAppElement('#root')
 
-import { transactions } from '../../utils/testes'
 import { dateFormatter, moneyFormatter } from '../../utils/Formatted'
 
-//import { SearchForm } from '../../components/SearchForm'
+import { Load } from '../../components/Load'
+import {toast} from 'react-toastify'
+import { AuthContext } from '../../contexts/auth'
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    getFirestore,
+    doc,
+    deleteDoc,
+} from 'firebase/firestore'
+
+type TransactionsProps = {
+    id: string;
+    description: string;
+    type: string;
+    price: string;
+    date: string;
+}
 
 export function Bank(){
+    const {user} = useContext(AuthContext)
+    const [load, setLoad] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [searchText, setSearchText] = useState('')
+    const [transactions, setTransactions] = useState<TransactionsProps[]>([])
     const [filteredTransactions, setFilteredTransactions] = useState(transactions)
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
-    const [totalIncome, setTotalIncome] = useState(0)
-    const [totalExpenses, setTotalExpenses] = useState(0)
+    const [totalIncome, setTotalIncome] = useState(0) // Entradas
+    const [totalExpenses, setTotalExpenses] = useState(0) // Saídas
 
     const titlePage = 'Marcenaria | '
 
     useEffect(() => {
         document.title = `${titlePage} Finanças`
+        loadTransactions()
     },[])
 
+    
+    // Carregar transações por Data
     useEffect(() => {
         const filteredTransactions = transactions.filter(
           (transaction) => transaction.description.toLowerCase().includes(searchText.toLowerCase())
@@ -66,19 +91,22 @@ export function Bank(){
     
         // Ordenar transações por data
         filteredByMonth.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    
-        setFilteredTransactions(filteredByMonth)
-    }, [searchText, currentMonth])
 
+        setFilteredTransactions(filteredByMonth)
+
+    }, [searchText, currentMonth, transactions])
+
+
+    // Calculo de entradas e saídas
     useEffect(() => {
         let income = 0
         let expenses = 0
 
         filteredTransactions.forEach(transaction => {
             if (transaction.type === 'income' ){
-                income += transaction.price
+                income += parseFloat(transaction.price)
             } else if (transaction.type === 'outcome'){
-                expenses += transaction.price
+                expenses += parseFloat(transaction.price)
             }
         })
 
@@ -86,6 +114,23 @@ export function Bank(){
         setTotalExpenses(expenses)
 
     },[filteredTransactions])
+    
+
+    async function loadTransactions(){
+        setLoad(true)
+        const firestore = getFirestore()
+        const transactionCollectionRef = collection(firestore, 'transactions')
+        const querySnapshot = await getDocs(query(transactionCollectionRef, where('userId', '==', user?.id)))
+
+        const loadingTransactionsUser: TransactionsProps[] = []
+        querySnapshot.forEach((doc) => {
+            loadingTransactionsUser.push({ id: doc.id, ...doc.data() } as TransactionsProps )
+        })
+
+        setTransactions(loadingTransactionsUser)
+        setLoad(false)
+    }
+
     
     function openModal(){
         setIsModalOpen(true)
@@ -116,6 +161,23 @@ export function Bank(){
         return monthName
     }
 
+    async function handleDeleteTransaction(id: string){
+
+        try {
+            const firestore = getFirestore()
+            const transactionsDocRef = doc(firestore, 'transactions', id)
+            
+            await deleteDoc(transactionsDocRef)
+            setFilteredTransactions(transacoesAnteriores =>
+                transacoesAnteriores.filter(transacao => transacao.id !== id)
+            )
+            
+            toast.success('Transação excluída com sucesso!')
+            
+        } catch (error) {
+            toast.success('Não foi possível excluir a transação.')
+        }
+    }
 
     return (
         <Container>
@@ -142,14 +204,6 @@ export function Bank(){
                 </button>
             </Header>
             
-            {/* 
-            <SearchForm
-                placeholder='Encontrar uma Transação'
-                value={searchText}
-                onChange={e => setSearchText(e)}
-            />
-            */}
-
             <Total>
                 <div>
                     <TotalTransactions variant='income'> 
@@ -170,56 +224,60 @@ export function Bank(){
                 </div>
             </Total>
 
-            {/* 
-            <Form>
-                <form action="#">
-                    <input 
-                        type="text" 
-                        placeholder='Pesquisar Transação'
-                        value={searchText}
-                        onChange={e => setSearchText(e.target.value)}
-                    />
-                </form>
-            </Form>
-            */}
+           { load ? (
+                <div style={{textAlign: 'center', marginTop: '40px'}}>
+                    <Load />
+                </div>
+           ) : (
+                <TransactionsTable>
+                    <tbody>
+                        {filteredTransactions.map(transaction => {
+                            return (
+                                <tr key={transaction.id} >
+                                    
+                                    <td > {transaction.description} </td>
+
+                                    <td> 
+                                        {transaction.type === 'income' || transaction.type === 'outcome' ? (
+                                            <PriceHightlight variant={transaction.type} >
+                                                {transaction.type === 'outcome' && '- '}
+                                                {moneyFormatter(String(transaction.price)) }
+                                            </PriceHightlight>
+                                        ) : (
+                                            // Renderizar algum conteúdo alternativo ou exibir um erro adequado
+                                            <span>Invalid type</span>
+                                        )}
+                                    </td>
 
 
-            <TransactionsTable>
-                <tbody>
-                    {filteredTransactions.map(transaction => {
-                        return (
-                            <tr key={transaction.id} >
-                                
-                                <td > {transaction.description} </td>
-
-                                <td> 
-                                    {transaction.type === 'income' || transaction.type === 'outcome' ? (
-                                        <PriceHightlight variant={transaction.type} >
-                                            {transaction.type === 'outcome' && '- '}
-                                            {moneyFormatter(String(transaction.price)) }
-                                        </PriceHightlight>
-                                    ) : (
-                                        // Renderizar algum conteúdo alternativo ou exibir um erro adequado
-                                        <span>Invalid type</span>
-                                    )}
-                                </td>
-
-
-                                {/* <td> {transaction.category} </td> */}
-                                <td> {dateFormatter.format(new Date(transaction.date))} </td>
-                            </tr>
-                        )
-                    })}
-                    
-                </tbody>
-            </TransactionsTable>
+                                    {/* <td> {transaction.category} </td> */}
+                                    <td> {dateFormatter.format(new Date(transaction.date))} </td>
+                                    
+                                    <td>
+                                        <button 
+                                            onClick={() => handleDeleteTransaction(transaction.id)}
+                                        >
+                                            <FaTrash size={16} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                
+                </TransactionsTable>
+           )}
+            
 
 
             <ModalComponent
                 isOpen={isModalOpen}
                 onClose={closeModal}
             >
-                <NewTransactionModal closeModal={closeModal} />
+                <NewTransactionModal 
+                    closeModal={closeModal} 
+                    loadTransactions={loadTransactions}
+                />
             </ModalComponent>
 
         </Container>

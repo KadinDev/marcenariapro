@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import {
     Container,
     ContentForm,
@@ -16,53 +16,71 @@ import { FaArrowAltCircleDown, FaArrowAltCircleUp, FaPiggyBank } from 'react-ico
 import { defaultTheme } from '../../styles/themes'
 
 import { moneyFormatter } from '../../utils/Formatted'
-import { generateUniqueID } from '../../utils/GenerateUniqueID'
+
+import { Load } from '../../components/Load'
+import { toast } from 'react-toastify'
+import { AuthContext } from '../../contexts/auth'
+import {
+    collection,
+    getFirestore,
+    addDoc
+} from 'firebase/firestore'
 
 const newTransactionFormSchema = z.object({
     description: z.string(),
     price: z.string(),
-    //category: z.string(),
 })
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
 type NewTransactionModalProps = {
     closeModal: () => void;
+    loadTransactions: () => void;
 }
 
-export function NewTransactionModal({closeModal} : NewTransactionModalProps){
+export function NewTransactionModal({closeModal, loadTransactions} : NewTransactionModalProps){
+    const {user} = useContext(AuthContext)
     const [buttonSelect, setButtonSelect] = useState('income')
+    const [load, setLoad] = useState(false)
 
+    
     const {
         register,
         handleSubmit,
-        //formState: { isSubmitted }, 
-        //reset
+        formState: { isSubmitted }, 
+        reset
     } = useForm<NewTransactionFormInputs>({
         resolver: zodResolver(newTransactionFormSchema)
     })
 
     async function handleCreateNewTransaction(data: NewTransactionFormInputs){
-        if(!buttonSelect) return alert('Selecione uma Entrada ou Saída')
+        setLoad(true)
 
-        const newTransaction = {
-            id: generateUniqueID(),
-            description: data.description,
-            price: data.price.replace(/\D/g, ''),
-            //category: data.category,
-            type: buttonSelect,
-            date: new Date(),
+        try {
+            const firestore = getFirestore()
+            const transactionsColectionRef = collection(firestore, 'transactions')
+            
+            const newTransaction = {
+                description: data.description,
+                price: data.price.replace(/\D/g, ''),
+                type: buttonSelect,
+                date: Date.now(),
+                userId: user?.id
+            }
+            await addDoc(transactionsColectionRef, newTransaction)
+            
+            toast.success('Transação cadastrada!')
+            setLoad(false)
+            closeModal()
+            loadTransactions() // minha função em Bank que carrega as transações
+            reset()
+        } 
+        catch (error) {
+            toast.error('Não foi possível cadastrar essa transação!')
+            setLoad(false)
         }
-        console.log(newTransaction)
-
-        //reset() 
     }
 
-    /*
-    async function handleDeleteTransaction(client : string){
-        console.log('cliente deletado', client)
-    }
-    */
 
     return (
         <Container>
@@ -100,33 +118,37 @@ export function NewTransactionModal({closeModal} : NewTransactionModalProps){
                     />
                     */}
                    
-                   
                    <TransactionType>
                         <TransactionTypeButton
                             type='button'
                             variant='income'
                             isActive={buttonSelect === 'income'}
+                            disabled={isSubmitted}
                             onClick={() => setButtonSelect('income')}
                         >
+                            
                             <FaArrowAltCircleUp size={24} />
-                            Entrada
+                            entrada
                         </TransactionTypeButton>
 
                         <TransactionTypeButton
                             type='button'
                             variant='outcome'
                             isActive={buttonSelect === 'outcome'}
+                            disabled={isSubmitted}
                             onClick={() => setButtonSelect('outcome')}
                         >
+                            
                             <FaArrowAltCircleDown size={24} />
-                            Saída
+                            saída
                         </TransactionTypeButton>
                     </TransactionType>
 
                     <button
                         type='submit'
+                        disabled={isSubmitted}
                     >
-                        Cadastrar
+                        { load ? <Load/> : 'cadastrar' }
                     </button>    
                 </form>
                  

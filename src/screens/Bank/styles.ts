@@ -142,6 +142,29 @@ export const TransactionsTable = styled.table`
             width: 12rem;
         }
     }
+
+    td:nth-child(3) {
+        width: 150px;
+        text-align: center;
+    }
+
+    td:nth-child(4) {
+        width: 16px;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+        
+        &:hover {
+            opacity: 1;
+        }
+
+        button {
+            background-color: transparent;
+        }
+
+        svg {
+            color: ${props => props.theme.red};
+        }
+    }
 `
 
 interface PriceHightlightProps {

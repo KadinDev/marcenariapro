@@ -18,7 +18,6 @@ import {zodResolver} from '@hookform/resolvers/zod'
 import { dateFormatter, phoneFormatter } from '../../utils/Formatted'
 import { GrClose } from 'react-icons/gr'
 
-import { generateUniqueID } from '../../utils/GenerateUniqueID'
 import { defaultTheme } from '../../styles/themes'
 import { FaUsers } from "react-icons/fa";
 
@@ -107,7 +106,6 @@ export function NewClientModal( {existingClientData, closeModal, loadClients} : 
             // CRIAR NOVO CLIENTE
             else {
                 const newClient = {
-                    id: generateUniqueID(),
                     name,
                     city,
                     address,

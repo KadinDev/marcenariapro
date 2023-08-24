@@ -8,6 +8,7 @@ import {
 
 import { AvatarUser } from '../../components/AvatarUser';
 import { AuthContext } from '../../contexts/auth'
+import { Load } from '../../components/Load'
 
 export function Dashboard(){
     const titlePage = 'Marcenaria | ';
@@ -21,7 +22,7 @@ export function Dashboard(){
         <Container>
             <Header>
                 <TitleHeader> {user?.name} </TitleHeader>
-                <AvatarUser />
+                <AvatarUser avatar={user?.avatarUrl} />
             </Header>
 
 

@@ -68,6 +68,14 @@ export const ContentForm = styled.div`
             &:hover {
                 filter: brightness(100%);
             }
+
+            &:disabled {
+                cursor: not-allowed;
+            }
+
+            svg {
+                color: ${props => props.theme.sidebar}
+            }
         }
 
     }
@@ -119,30 +127,31 @@ interface TransactionTypeButtonProps {
 }
 
 export const TransactionTypeButton = styled.button<TransactionTypeButtonProps>`
-  background: ${props => (props.variant === 'income' ? props.theme["green-bank"] : props.theme.red) };
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  height: 2.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  border: 0;
-  color: ${props => props.theme.sidebar};
-  filter: brightness(50%);
+    background: ${props => (props.variant === 'income' ? props.theme["green-bank"] : props.theme.red) };
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 0;
+    color: ${props => props.theme.sidebar};
+    filter: brightness(50%);
+    text-transform: capitalize;
 
-  svg {
-    color: ${props => props.theme.sidebar };
-  }
+    svg {
+        color: ${props => props.theme.sidebar };
+    }
 
-  &:hover {
-    transition: filter 0.2s;
+    &:hover {
+        transition: filter 0.2s;
 
-    filter: brightness(100%);
-  }
+        filter: brightness(100%);
+    }
 
-  filter: brightness(
-    ${(props) => props.isActive ? '100%' : '50%' }
-  );
+    filter: brightness(
+        ${(props) => props.isActive ? '100%' : '50%' }
+    );
 
 `;

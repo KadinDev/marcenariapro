@@ -4,14 +4,14 @@ import {
     ImageAvatar
 } from './styles'
 
-export function AvatarUser(){
-
-    //const user = true
-    
+type AvatarProps = {
+    avatar?: string
+}
+export function AvatarUser( { avatar } : AvatarProps ){
     return (
         <Container>
             <ImageAvatar
-                src='https://github.com/KadinDev.png' alt='Imagem de perfil'
+                src={avatar}
             />
         </Container>
     )
