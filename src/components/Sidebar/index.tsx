@@ -88,7 +88,7 @@ export function Sidebar() {
 
         <ContainerLink>
           <img src={logo} alt='Logo' />
-          <h2>Menu</h2>
+          
 
           <ul>
             {links.map((link) => (

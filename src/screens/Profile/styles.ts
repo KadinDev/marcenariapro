@@ -65,6 +65,10 @@ export const Container = styled.div`
                 &:hover {
                     filter: brightness(90%);
                 }
+
+                &:disabled {
+                    cursor: not-allowed;
+                }
             }
         }
 
@@ -74,6 +78,7 @@ export const Container = styled.div`
 export const TitleHeader = styled.h2`
     color: ${({theme}) => theme.text};
     font-weight: 600;
+    text-transform: capitalize;
 
     border-bottom: solid 1px ${props => props.theme.placeholder};
     padding-bottom: 5px;
@@ -86,7 +91,7 @@ export const Upload = styled.div`
     flex-direction: column;
 
     img {
-        width: 15.6rem;
+        width: 100%;
         height: 9.3rem;
         margin-bottom: 5px;
     }

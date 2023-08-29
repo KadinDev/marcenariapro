@@ -29,9 +29,12 @@ type AuthContextData = {
     isLogging: boolean;
     isLoggingRecoverPass: boolean;
     user: User | null;
+
+    // React.Dispatch = representa uma função que pode ser usada para despachar ações para atualizar o estado
+    setUser: React.Dispatch<React.SetStateAction< User | null >>;
 }
 
-type User = {
+export type User = {
     id: string;
     avatarUrl?: string;
     name: string;
@@ -182,7 +185,8 @@ export function AuthProvider( {children} : AuthProviderProps ){
                 signIn,
                 signOutUser,
                 signUp,
-                forgotPassword
+                forgotPassword,
+                setUser
             }}
         >
             { children }

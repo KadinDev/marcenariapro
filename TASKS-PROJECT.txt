@@ -4,33 +4,16 @@ RECUPERAR SENHA = OK
 REGISTER = OK
 FINAÇAS = OK
 
-CONSTATOS = Falta somente a parte de mostrar o contato no modal
+CLIENTES = Falta somente a parte de mostrar o contato no modal
+PERFIL = FALTA UPLOAD DE FOTO
 
 * REGISTER = FALTA PAGAMENTO STRIPE
-
-
-
-
-
-    TELA CLIENTES | Firebase
-* páginação tela clientes (quando estiver utilizando o firebase)
-
-    TELA FINANÇAS | Firebase
-* fazer a ideia para cada finança ser excluida automaticamente daqui há 2 anos (quando estiver utilizando o firebase)
-
+* Melhorar o visual da pagina entregas
 
 * tela dashboard
-* animação LOAD no botao de entrar
+
 
 ////////////
-
-
-<p>Hello,</p>
-<p>Follow this link to reset your %APP_NAME% password for your %EMAIL% account.</p>
-<p><a href='%LINK%'>%LINK%</a></p>
-<p>If you didn’t ask to reset your password, you can ignore this email.</p>
-<p>Thanks,</p>
-<p>Your %APP_NAME% team</p>
 
 
 
