@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 
 import { 
   PDFDownloadLink, 
@@ -6,7 +7,7 @@ import {
   View, 
   Document, 
   StyleSheet,
-  Image
+  //Image
 } from '@react-pdf/renderer'
 
 import {ButtonPdf, DownloadPdf } from './styles'
@@ -26,6 +27,7 @@ type ReceiptsProps = {
 import { defaultTheme } from '../../../styles/themes';
 import { FaRegFilePdf } from 'react-icons/fa'
 import { moneyFormatter, dateFormatter } from '../../../utils/Formatted';
+import { AuthContext } from '../../../contexts/auth'
 
 export function Pdf( {
   title,
@@ -39,14 +41,7 @@ export function Pdf( {
   email
 } : ReceiptsProps ) {
   
-  const marcenaria = {
-    img: 'https://lh3.googleusercontent.com/p/AF1QipPPqrAdcUlx1mCQgqJTABNNEUNRP2SFgUFRy-dy=s680-w680-h510',
-    name: 'Lar Bonito Móveis Marcenaria',
-    address: 'Ipueiras Ce',
-    tel: '(88) 99372-3747',
-    email: 'larbonitomoveis@outlook.com',
-    cpfOrcnpj: '046.410.323-19'
-  }
+  const {user} = useContext(AuthContext)
 
 
   const dataAtual = date ? new Date(date) : new Date()
@@ -64,18 +59,18 @@ export function Pdf( {
 
       <View style={styles.header} >
         <Text style={styles.headerh1}>{title}</Text>
-        
-        <Image style={styles.headerImg} src={marcenaria.img}  />
+        {/* 
+        <Image style={styles.headerImg} src={user?.avatarUrl}  />
+        */}
       </View>
 
       <View style={styles.infoBudget} >
           <View style={styles.infoBudgetDiv}>
             <Text style={styles.infoBudgetSpan}>DE</Text>
-            <Text style={styles.infoBudgetP}>{marcenaria.name}</Text>
-            <Text style={styles.infoBudgetP}>{marcenaria.address}</Text>
-            <Text style={styles.infoBudgetP}>{marcenaria.tel}</Text>
-            <Text style={styles.infoBudgetP}>{marcenaria.email}</Text>
-            <Text style={styles.infoBudgetP}>{marcenaria.cpfOrcnpj}</Text>
+            <Text style={styles.infoBudgetP}>{user?.name}</Text>
+            <Text style={styles.infoBudgetP}>{user?.address}</Text>
+            <Text style={styles.infoBudgetP}>{user?.contact}</Text>
+            <Text style={styles.infoBudgetP}>{user?.cnpjOrcpf}</Text>
           </View>
           <View style={styles.infoBudgetDiv}>
             <Text style={styles.infoBudgetSpan}>para</Text>
@@ -135,10 +130,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     backgroundColor: '#f5f5f5',
-    paddingTop: 20,
-    minHeight: '120px',
+    minHeight: '100px',
     position: 'relative',
   },
   headerh1: {
@@ -160,9 +154,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -50,
     borderRadius: '5px',
+    objectFit: 'cover'
   },
   infoBudget: {
-    marginTop: '100px',
+    marginTop: '50px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

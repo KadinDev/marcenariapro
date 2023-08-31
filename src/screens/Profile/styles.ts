@@ -90,13 +90,15 @@ export const Upload = styled.div`
     display: flex;
     flex-direction: column;
 
+
     img {
+        object-fit: cover;
         width: 100%;
-        height: 9.3rem;
+        height: 10rem;
         margin-bottom: 5px;
     }
 
-    button {
+    span {
         position: relative;
         height: 2.5rem;
         width: 15.6rem;

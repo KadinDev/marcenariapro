@@ -165,7 +165,6 @@ export function Budgets(){
         }
 
         setNewBudgets(newBudgets as NewBudgetsProps)
-        console.log(newBudgets)
         setModalPdf(true)
     }
 

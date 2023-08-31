@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import {
     Container,
@@ -20,6 +20,7 @@ import {
 
 import { GrClose } from 'react-icons/gr'
 import { dateFormatter, moneyFormatter } from '../../utils/Formatted'
+import {AuthContext} from '../../contexts/auth'
 
 import { Pdf } from './Pdf'
 
@@ -48,17 +49,8 @@ type BudgetsProps = {
     closeModal: () => void;
 }
 
-const marcenaria = {
-    img: 'https://lh3.googleusercontent.com/p/AF1QipPPqrAdcUlx1mCQgqJTABNNEUNRP2SFgUFRy-dy=s680-w680-h510',
-    name: 'Lar Bonito Móveis Marcenaria',
-    address: 'Ipueiras Ce',
-    tel: '(88) 99372-3747',
-    email: 'larbonitomoveis@outlook.com',
-    cpfOrcnpj: '046.410.323-19'
-}
-
 export function PdfBudgets( {newBudgets, closeModal} : BudgetsProps ){
-    const [imgMarcenaria, setImgMarcenaria] = useState('')
+    const { user } = useContext(AuthContext)
     const [formattedReportContent, setFormattedReportContent] = useState('')
     const [formattedDescriptionContent, setFormattedDescriptionContent] = useState('')
     const [formattedContractContent, setFormattedContractContent] = useState('')
@@ -78,7 +70,6 @@ export function PdfBudgets( {newBudgets, closeModal} : BudgetsProps ){
           setFormattedReportContent(formattedReportContent)
           setFormattedDescriptionContent(formattedDescriptionContent)
           setFormattedContractContent(formattedContractContent)
-          setImgMarcenaria(marcenaria.img)
         }, delay)
     
         return () => clearTimeout(timer)
@@ -97,17 +88,18 @@ export function PdfBudgets( {newBudgets, closeModal} : BudgetsProps ){
                         <Header>
                             <h1> {newBudgets.title} </h1>
                             <span> Criado em {dateFormatter.format(Date.now())} </span>
-                            <img src={imgMarcenaria} alt="Foto de perfil Marcenaria" />
+                            {/*
+                            <img src={user?.avatarUrl} alt="Foto de perfil Marcenaria" />
+                            */} 
                         </Header>
 
                         <InfoBudget>
                             <div>
                                 <span>DE</span>
-                                <strong> {marcenaria.name} </strong>
-                                <p> {marcenaria.address} </p>
-                                <p> {marcenaria.tel} </p>
-                                <p> {marcenaria.email} </p>
-                                <p> {marcenaria.cpfOrcnpj} </p>
+                                <strong> {user?.name} </strong>
+                                <p> {user?.address} </p>
+                                <p> {user?.contact} </p>
+                                <p> {user?.cnpjOrcpf} </p>
                             </div>
                             <div>
                                 <span>para</span>

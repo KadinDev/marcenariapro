@@ -58,9 +58,8 @@ export const Header = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-around;
     background-color: #f5f5f5;
-    padding-top: 20px;
     height: 12.5rem;
     
 
@@ -75,13 +74,15 @@ export const Header = styled.div`
         margin-bottom: 10px;
     }
     img {
-        width: 15.5rem;
+        width: 21.25rem;
+        height: 15rem;
         border: solid 4px ${props => props.theme.sidebar};
         box-shadow: 0 0 4px #111;
+        object-fit: cover;
     }
 `
 export const InfoBudget = styled.section`
-    margin-top: 12rem;
+    margin-top: 5rem;
     display: flex;
     flex-direction: row;
     align-items: center;
