@@ -18,7 +18,8 @@ import { toast } from 'react-toastify'
 import { 
     AiOutlineEye, 
     AiOutlineEyeInvisible,
-    AiOutlineLoading
+    AiOutlineLoading,
+    AiFillWindows
 } from 'react-icons/ai'
 
 import { MdVerified } from 'react-icons/md'
@@ -76,6 +77,7 @@ export function Register(){
                 <ContentLogo>
                     <img src={logo} alt="Imagem da logo" />
                     <h1>
+                        <AiFillWindows size={20}/>
                         <MdVerified size={20} />
                         Marcenaria Pro  
                     </h1>

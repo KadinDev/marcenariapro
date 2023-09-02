@@ -19,11 +19,13 @@ import {
     AiOutlineEyeInvisible, 
     AiFillYoutube,
     AiOutlineClose,
-    AiOutlineSend
+    AiOutlineSend,
+    AiOutlineInstagram,
+    AiOutlineWhatsApp,
+    AiFillWindows
 } from 'react-icons/ai'
 
 import { MdVerified } from 'react-icons/md'
-import { AiOutlineInstagram, AiOutlineWhatsApp } from 'react-icons/ai'
 import { Load } from '../../components/Load'
 import { AuthContext } from '../../contexts/auth'
 
@@ -101,6 +103,7 @@ export function Login(){
                 <ContentLogo>
                     <img src={logo} alt="Imagem da logo" />
                     <h1>
+                        <AiFillWindows size={20}/>
                         <MdVerified size={20} />
                         Marcenaria Pro  
                     </h1>
@@ -120,6 +123,7 @@ export function Login(){
                             <AiOutlineWhatsApp size={18} />
                         </a>
                         */}
+                        
                     </div>
                 </ContentLogo>
 

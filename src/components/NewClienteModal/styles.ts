@@ -175,6 +175,7 @@ export const ExistingClient = styled.div`
         color: ${({theme}) => theme.title};
         font-weight: 600;
         margin-right: 5px;
+        text-transform: capitalize;
     }
 
     p {

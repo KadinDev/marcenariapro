@@ -47,7 +47,7 @@ export interface ExistingClientData {
     name: string;
     city: string;
     address: string;
-    contact: number;
+    contact: string;
     date?: number;
 }
 
@@ -163,7 +163,7 @@ export function NewClientModal( {existingClientData, closeModal, loadClients} : 
                         <p> <span>Nome:</span>{existingClientData.name}</p>
                         <p> <span>Cidade:</span>{existingClientData.city}</p>
                         <p> <span>Endereço:</span>{existingClientData.address}</p>
-                        <p> <span>Contato:</span>{phoneFormatter(String(existingClientData.contact))}</p>
+                        <p> <span>contato:</span> { existingClientData.contact } </p>
                         <p> <span>Cadastrado em:</span>{ dateFormatter.format(existingClientData.date)} </p>
                         
                     </ExistingClient>

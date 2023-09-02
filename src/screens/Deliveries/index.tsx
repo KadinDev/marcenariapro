@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 
 import {
   Container,
@@ -15,6 +15,20 @@ import {
 import { BsTrash } from 'react-icons/bs'
 import 'react-calendar/dist/Calendar.css'
 
+import { AuthContext } from '../../contexts/auth'
+import { toast } from 'react-toastify'
+import { Load } from '../../components/Load'
+import {
+  getFirestore,
+  collection,
+  query,
+  addDoc,
+  doc,
+  deleteDoc,
+  getDocs,
+  where
+} from 'firebase/firestore'
+
 interface Reminder {
     date: Date;
     title: string;
@@ -23,54 +37,96 @@ interface Reminder {
   }
 
 export function Deliveries(){
-
+  const { user } = useContext(AuthContext)
   const titlePage = 'Marcenaria | '
   
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedDates, setSelectedDates] = useState<Reminder[]>([])
+  const [deliveryExistsForSelectedDate, setDeliveryExistsForSelectedDate] = useState(false)
   const [title, setTitle] = useState('')
   const [cliente, setCliente] = useState('')
   const [address, setAddress] = useState('')
+  const [loadSaveDelivery, setLoadSaveDelivery] = useState(false)
 
   useEffect(() => {
     document.title = `${titlePage} Entregas`
   },[])
+
+  useEffect(() => {
+    loadDeliveries()
+  },[])
   
   function handleDateClick(date: Date){
     setSelectedDate(date)
+
+    //vefiricar se já tem entrega salva na data clicada
+    const deliveryExists = selectedDates.some(
+      (reminder) => reminder.date.toDateString() === date.toDateString()
+    )
+    setDeliveryExistsForSelectedDate(deliveryExists)
   }
 
-  function handleSave(){
-    if(!selectedDate){
-      alert('Selecione uma data para entrega!')
-      return
-    } else if (!title){
-      alert('Coloque um nome!')
-      return
-    } else if (!cliente){
-      alert('Entrega para qual cliente?')
-      return
-    } else if(!address){
-      alert('Escreva o endereço para entrega!')
+  async function loadDeliveries(){
+    const firestore = getFirestore()
+    const userDeliveriesCollectionRef = collection(firestore, 'delivery')
+    const querySnapshot = await getDocs(query(userDeliveriesCollectionRef, where('userId', '==', user?.id)))
+
+    const loadDeliveries: Reminder[] = []
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data()
+      // esse é um outro modo de fazer
+      const reminder: Reminder = {
+        date: data.date.toDate(), //Convert Firestore Timestamp To Date
+        title: data.title,
+        cliente: data.cliente,
+        address: data.address,
+      }
+      loadDeliveries.push(reminder)
+    })
+
+    setSelectedDates(loadDeliveries)
+  }
+
+  async function handleSave(){
+    if(!selectedDate || !title || !cliente || !address){
+      toast.error('Selecione uma data e preencha os campos!')
       return
     }
+    setLoadSaveDelivery(true)
+    try {
+      const firestore = getFirestore()
 
-    // Lógica para salvar as informações na data selecionada
-    if (selectedDate) {
-      // Salvar as informações na data marcada
-      const newReminder: Reminder = {
-        date: selectedDate,
-        title: title,
-        cliente: cliente,
-        address: address,
-      }
-      setSelectedDates([...selectedDates, newReminder])
+      if(selectedDate){
+        const newReminder: Reminder = {
+          date: selectedDate,
+          title: title,
+          cliente: cliente,
+          address: address,
+        }
+        const reminderData = {
+          ...newReminder,
+          userId: user?.id
+        }
+
+        const deliveryCollectionRef = collection(firestore, 'delivery')
+        await addDoc(deliveryCollectionRef, reminderData)
+        toast.success('Entrega adicionada!')
+        loadDeliveries() // executa a função de carregar entregas toda vez que salva uma nova entrega
+        setLoadSaveDelivery(false)
+        setDeliveryExistsForSelectedDate(true) // bota desabilita na data cadastrada
+      }      
       setTitle('')
       setCliente('')
-      setAddress('') 
+      setAddress('')
+    } catch (error) {
+      toast.error('Não foi possível salvar a entrega!')
+      setLoadSaveDelivery(false)
     }
+    
   }
-
+  
+  
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value)
   }
@@ -91,7 +147,6 @@ export function Deliveries(){
     (reminder) => reminder.date.toDateString() === selectedDate?.toDateString()
   )
 
-
   const markedContent = ({ date, view }: any) => {
     if (view === 'month') {
       const dateString = date.toDateString();
@@ -102,22 +157,41 @@ export function Deliveries(){
     }
     return null
   }
+  
 
-  function handleDeleteDate(){
-    if(!selectedDate) {
+  async function handleDeleteDate(dateToDelete: Date){
+    if(!dateToDelete){
       return
     }
 
-    const newSelectedDates = selectedDates.filter(
-      (reminder) => reminder.date.toDateString() !== selectedDate.toDateString()
-    )
+    try {
+      const firestore = getFirestore()
+      const userDeliveriesCollectionRef = collection(firestore, 'delivery')
 
-    setSelectedDates(newSelectedDates)
-    setSelectedDate(null)
+      // Encontre o documento correspondente à data selecionada e ao userId
+      const querySnapshot = await getDocs(query(userDeliveriesCollectionRef, where('userId', '==', user?.id)))
+
+      querySnapshot.forEach(async (docDate) => {
+        const data = docDate.data();
+        if (data.date.toDate().toDateString() === dateToDelete.toDateString()) {
+          const docRef = doc(userDeliveriesCollectionRef, docDate.id)
+          await deleteDoc(docRef)
+        }
+      })
+
+      toast.success('Entrega cancelada!')
+      loadDeliveries()
+      setSelectedDate(null)
+      setDeliveryExistsForSelectedDate(false)
+      
+      } catch (error) {
+        toast.error('Não foi possível excluir a entrega!')
+    }
   }
 
   return (
     <Container>
+      
       <Header>
           <TitleHeader>Entregas</TitleHeader>
           {/* 
@@ -160,25 +234,26 @@ export function Deliveries(){
                 value={title}
                 onChange={handleTitleChange}
                 placeholder='Nome Projeto'
-                required
               />
               <input 
                 type="text" 
                 value={cliente}
                 onChange={handleClienteChange}
                 placeholder='Nome Cliente'
-                required
               />
               <input 
                 type="text" 
                 value={address}
                 onChange={handleAddressChange}
                 placeholder='Endereço'
-                required
               />
 
-              <button type="button" onClick={handleSave}>
-                cadastrar
+              <button 
+                type="button" 
+                onClick={handleSave}
+                disabled={deliveryExistsForSelectedDate}
+              >
+                { loadSaveDelivery ? <Load/> : 'cadastrar' }
               </button>
             </form>
           </Form>
@@ -187,13 +262,13 @@ export function Deliveries(){
             <Info>
               <div>
                 <h3>Entrega </h3>
-                <button onClick={handleDeleteDate}>
+                <button onClick={() => handleDeleteDate(selectedInfo.date)}>
                   <BsTrash size={20} color='#ff4f4f' />
                 </button>
               </div>
-              <p> Projeto: {selectedInfo.title}</p>
-              <p> Cliente: {selectedInfo.cliente}</p>
-              <p> Endereço: {selectedInfo.address}</p>
+              <p> <span>Projeto: </span> {selectedInfo.title}</p>
+              <p> <span>Cliente:</span> {selectedInfo.cliente}</p>
+              <p> <span>Endereço:</span> {selectedInfo.address}</p>
             </Info>
           )}
         </ContainerForm>

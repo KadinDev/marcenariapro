@@ -198,7 +198,7 @@ export function Customers(){
                                         
                                         <td>
                                             <button onClick={() => 
-                                                openModalWithClient({...client, contact: parseInt(client.contact.toString())})} >
+                                                openModalWithClient({...client, contact: client.contact})} >
                                                 <BsInfo
                                                     size={25}
                                                     color={defaultTheme['orange-dark']}

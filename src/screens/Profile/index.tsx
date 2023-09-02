@@ -22,6 +22,7 @@ import logo from '../../assets/logoblack.png'
 
 export function Profile(){
     const { user, setUser } = useContext(AuthContext)
+    const titlePage = 'Marcenaria | '
 
     const [load, setLoad] = useState(false)
     const [aboutLength, setAboutLength] = useState(user?.about || '')
@@ -39,11 +40,16 @@ export function Profile(){
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
 
     useEffect(() => {
+        document.title = `${titlePage} ${user?.name}`
+      },[user])
+
+    useEffect(() => {
         const storage = getStorage()
         const storageReference = ref(storage, `users/${user?.id}`)
         setStorageRef(storageReference)
     },[user])
 
+    
     async function updateUserProfile(e: FormEvent){
         e.preventDefault()
         setLoad(true)

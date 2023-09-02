@@ -41,11 +41,15 @@ export const TitleHeader = styled.h1`
 export const CalendarContainer = styled.div`
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    justify-content: flex-start;
     margin-top: 1rem;
+
+    overflow-x: auto; // ativar scroll
+    white-space: nowrap; // ativar scroll
 `;
 
 export const StyledCalendar = styled(Calendar)`
+    width: 25rem;
     background-color: ${props => props.theme.sidebar};
     padding: 1rem;
     border-radius: 5px;
@@ -67,16 +71,10 @@ export const StyledCalendar = styled(Calendar)`
 
     // os dias
     .react-calendar__tile {
-        color: ${props => props.theme.title};
         font-size: 1rem;
         position: relative;
         width: 2.5rem;
         height: 2.5rem;
-
-        &:hover {
-            background-color: ${props => props.theme.placeholder};
-        }
-
     }
 
     /* Estilos para os nomes dos dias */
@@ -84,21 +82,27 @@ export const StyledCalendar = styled(Calendar)`
         font-weight: bolder;
         color: ${props => props.theme['orange-dark']};
     }
+
+    /* Estilos para o dia atual (hoje) */
+    .react-calendar__tile--now {
+        border-radius: 5px;
+        background: none
+    }
+
 `
 
 export const MarkedDate = styled.div`
     position: absolute;
-    border: solid 2px ${props => props.theme.title};
+    border: solid 2px ${props => props.theme['orange-dark']};
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    opacity: 0.4;
-    border-radius: 10%;
+    border-radius: 5px;
 `;
 
 export const ContainerForm = styled.div`
-    flex: 1;
+    width: 30rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -122,11 +126,12 @@ export const Form = styled.div`
         color: ${props => props.theme.title};
 
         span {
-            background-color: ${props => props.theme.orange};
+            background-color: ${props => props.theme.text};
             padding: 0 5px;
             border-radius: 4px;
-            color: ${props => props.theme.title};
+            color: ${props => props.theme.sidebar};
             margin-left: 5px;
+            font-weight: normal;
         }
     }
     
@@ -165,6 +170,10 @@ export const Form = styled.div`
             &:hover {
                 opacity: 1;
             }
+            &:disabled {
+                cursor: not-allowed;
+                filter: brightness(10%);
+            }
         }
     }
 `
@@ -197,5 +206,10 @@ export const Info = styled.div`
         color: ${props => props.theme.text};
         font-size: 1rem;
         font-weight: bold;
+
+        span {
+            opacity: 0.7;
+        }
     }
+    
 `

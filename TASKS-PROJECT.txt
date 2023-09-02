@@ -3,22 +3,17 @@ LOGIN = OK
 RECUPERAR SENHA = OK
 REGISTER = OK
 DASHBOARD = ?
-CLIENTES = ?
+CLIENTES = OK
 FINANÇAS = OK
 ORÇAMENTOS = OK
 RECIBOS = OK
-ENTREGAS = ?
+ENTREGAS = OK
 PERFIL = OK
 
 
 * tela dashboard
-* CLIENTES = Falta somente a parte de mostrar o contato no modal
 * REGISTER = FALTA PAGAMENTO STRIPE
-* Melhorar o visual da pagina entregas
 
-
-
-////////////
 
 
 
