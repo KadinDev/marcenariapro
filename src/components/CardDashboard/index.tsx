@@ -1,28 +1,35 @@
-import { Card } from './styles'
+import { ReactNode } from 'react'
+
+import { 
+    Card,
+    Title,
+    Total,
+} from './styles'
+
 import { IconType } from 'react-icons'
 
 interface CardProps {
     title: string;
     icon: IconType;
     subTitle: string;
-    total: string;
-    borderType: 'green' | 'red' | 'orange' | 'black';
+    stylesType: 'green' | 'red' | 'orange' | 'black';
+    children?: ReactNode 
 }
 
-function IconRenderer({ icon }: { icon: IconType }) {
+function IconRenderer({ icon } : { icon: IconType }) {
     const Icon = icon; // Converta o ícone em um componente React
     return <Icon />
 }
 
-export function CardDashboard({title, icon, subTitle, total, borderType} : CardProps){
+export function CardDashboard({title, icon, subTitle, stylesType, children} : CardProps){
     return (
-        <Card borderType={borderType} >
-            <div>
-                <h2> {title} </h2>
-                <IconRenderer icon={icon} />
-            </div>
+        <Card stylesType={stylesType} >
+            <IconRenderer icon={icon} />
+            <Title stylesType={stylesType} > {title} </Title>
             <p> {subTitle} </p>
-            <span> {total} </span> 
+
+            {children}
+
         </Card>
     )
 }

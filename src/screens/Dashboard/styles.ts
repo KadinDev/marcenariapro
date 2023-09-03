@@ -21,13 +21,24 @@ export const TitleHeader = styled.h1`
     font-weight: 600;
 `;
 
+export const ContainerWrapper = styled.div`
+    margin-top: 2rem;
+
+`;
+
+export const TitleWrapper = styled.h1`
+    color: ${({theme}) => theme.placeholder};
+    font-size: 1rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+`;
+
 export const Wrapper = styled.div`
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 10px;
     height: 10rem;
-    flex: 1;
-    margin-top: 2rem;
 
     overflow-x: auto; // ativar scroll
     white-space: nowrap; // ativar scroll
