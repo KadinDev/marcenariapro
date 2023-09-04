@@ -6,6 +6,7 @@ export const Container = styled.div`
     width: 90vw;
     margin: 0 auto;
     background-color: ${({theme}) => theme.body};
+    padding-bottom: 4rem;
 `
 
 export const Header = styled.div`

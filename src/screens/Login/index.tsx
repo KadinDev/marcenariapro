@@ -113,7 +113,7 @@ export function Login(){
                         <AiFillYoutube size={20} />
                     </span>
                     {/* depois pegar no db o numero de marcenarias cadastradas */}
-                    <p>Aprovado por mais de 250 marcenarias</p>
+                    <p>Aprovado por mais de 850 marcenarias</p>
                     <div>
                         <a href="https://www.instagram.com/marcenariapro2023/" target='_blank'>
                             <AiOutlineInstagram size={18} />

@@ -14,6 +14,7 @@ import { AvatarUser } from '../../components/AvatarUser';
 import { AuthContext } from '../../contexts/auth'
 import { Load } from '../../components/Load'
 import { CardDashboard } from '../../components/CardDashboard'
+import { EbookMarcenariaPro } from '../../components/EbookMarcenariaPro'
 import { moneyFormatter } from '../../utils/Formatted'
 import { defaultTheme } from '../../styles/themes'
 
@@ -52,7 +53,6 @@ export function Dashboard(){
                         icon={AiOutlineWallet}
                         subTitle='todo o período'
                     >
-                        
                         <span style={{fontWeight: 'bold', color: defaultTheme['green-bank']}}> 
                             { totalIncome === 0 ? <Load/> : moneyFormatter(totalIncome.toString()) }
                         </span>
@@ -96,6 +96,9 @@ export function Dashboard(){
                 </Wrapper>
             </ContainerWrapper>
 
+            <EbookMarcenariaPro/>
+
+            
         </Container>
 
     )
