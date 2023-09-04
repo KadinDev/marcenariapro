@@ -112,8 +112,11 @@ export function Login(){
                         Veja por dentro do Marcenaria Pro
                         <AiFillYoutube size={20} />
                     </span>
-                    {/* depois pegar no db o numero de marcenarias cadastradas */}
-                    <p>Aprovado por mais de 850 marcenarias</p>
+
+                    {/* depois pegar no db o numero de marcenarias cadastradas,
+                    e usar a formatação de numeros */}
+                    <p>Aprovado por mais de 340 marcenarias</p>
+
                     <div>
                         <a href="https://www.instagram.com/marcenariapro2023/" target='_blank'>
                             <AiOutlineInstagram size={18} />
@@ -132,7 +135,6 @@ export function Login(){
                         <InputForm
                             type='email'
                             placeholder='Email'
-                            //required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -140,7 +142,6 @@ export function Login(){
                             <InputForm
                                 type={viewPassword ? 'text' : 'password'}
                                 placeholder='Senha'
-                                //required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

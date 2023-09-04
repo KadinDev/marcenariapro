@@ -10,7 +10,7 @@ import {
 import {BsPersonFillAdd, BsInfo, BsArrowLeft, BsArrowRight, BsFillPeopleFill} from 'react-icons/bs'
 import {defaultTheme} from '../../styles/themes'
 
-import { phoneFormatter } from '../../utils/Formatted'
+import { phoneFormatter, formatNumber } from '../../utils/Formatted'
 import { NewClientModal, ExistingClientData } from '../../components/NewClienteModal'
 import { ModalComponent } from '../../components/Modal'
 import { SearchForm } from '../../components/SearchForm'
@@ -158,7 +158,7 @@ export function Customers(){
                 </div>
             ) : (
                 <TableContainer>
-                    <p> {filteredClientes.length} clientes </p>
+                    <p> {formatNumber(filteredClientes.length)} clientes </p>
 
                     <table>
                         <thead>

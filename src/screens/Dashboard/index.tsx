@@ -21,6 +21,7 @@ import { defaultTheme } from '../../styles/themes'
 import { useTotalDeliveries } from '../../hooks/QuantityOfDeliveries'
 import { useTotalCustomers } from '../../hooks/QuantityOfCustomers'
 import { useTotalIncome, useTotalOutcome } from '../../hooks/UseTotalTransactions'
+import { formatNumber } from '../../utils/Formatted'
 
 import logo from '../../assets/logo.png'
 
@@ -80,7 +81,7 @@ export function Dashboard(){
                     >
                        
                         <span style={{fontWeight: 'bold', color: defaultTheme['orange-dark']}}> 
-                            {totalCustomers === 0 ? <Load/> : totalCustomers }
+                            {totalCustomers === 0 ? <Load/> : formatNumber(totalCustomers) }
                         </span>
                     </CardDashboard>
                     
@@ -91,7 +92,7 @@ export function Dashboard(){
                         subTitle='todo o período'
                     >   
                         <span style={{fontWeight: 'bold', color: defaultTheme.title}} > 
-                            {totalDeliveries === 0 ? <Load/> : totalDeliveries }
+                            {totalDeliveries === 0 ? <Load/> : formatNumber(totalDeliveries) }
                         </span>
                     </CardDashboard>
                     

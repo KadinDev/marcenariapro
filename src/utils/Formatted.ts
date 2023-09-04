@@ -5,7 +5,6 @@ export const priceFormatter = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL'
 })
 
-
 export const phoneFormatter = (phoneNumber : string) => {
     // Remove todos os caracteres não numéricos
     const cleanedNumber = phoneNumber.replace(/\D/g, '');
@@ -40,7 +39,6 @@ export const cnpjOrcpf = (documentNumber: string) => {
     return formattedNumber;
 };
 
-
 export const moneyFormatter = (amount: string) => {
     // Converte o valor para string e remove caracteres não numéricos
     const cleanedAmount = String(amount).replace(/\D/g, '');
@@ -55,4 +53,26 @@ export const moneyFormatter = (amount: string) => {
     // Retorna o valor formatado no estilo R$ X.XXX,XX
     return `R$ ${formattedReais},${centavos}`;
 };
+  
+// Estilo redes sociais
+export function formatNumber(value : number) {
+    const numericValue = value
+  
+    if (isNaN(numericValue)) {
+      return '0'
+    }
+  
+    if (numericValue >= 1000000) {
+        // Formatar para milhões (exemplo: 1.2M)
+        return (numericValue / 1000000).toFixed(1) + 'M';
+    } 
+    else if (numericValue >= 1000) {
+        // Formatar para milhares com precisão
+        return Math.floor(numericValue / 1000) + '.' + (numericValue % 1000).toString().padStart(3, '0') + 'K';
+    } 
+    else {
+        // Formatar como está (exemplo: 999)
+        return numericValue.toFixed(0);
+    }
+}
   
