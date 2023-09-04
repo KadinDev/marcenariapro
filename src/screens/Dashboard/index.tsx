@@ -22,6 +22,8 @@ import { useTotalDeliveries } from '../../hooks/QuantityOfDeliveries'
 import { useTotalCustomers } from '../../hooks/QuantityOfCustomers'
 import { useTotalIncome, useTotalOutcome } from '../../hooks/UseTotalTransactions'
 
+import logo from '../../assets/logo.png'
+
 export function Dashboard(){
     const titlePage = 'Marcenaria | ';
     const {user} = useContext(AuthContext)
@@ -39,7 +41,7 @@ export function Dashboard(){
         <Container>
             <Header>
                 <TitleHeader> {user?.name} </TitleHeader>
-                <AvatarUser avatar={user?.avatarUrl} />
+                <AvatarUser avatar={user?.avatarUrl ? user.avatarUrl : logo} />
             </Header>
 
 
