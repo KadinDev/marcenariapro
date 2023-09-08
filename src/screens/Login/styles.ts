@@ -323,3 +323,20 @@ export const StyledLinkButton = styled(Link)`
 
 `;
 
+export const StyledLinkButtonRegister = styled.a`
+    border-radius: 4px;
+    height: 2.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 40px;
+    background-color: ${props => props.theme.title};
+    color: ${props => props.theme.sidebar};
+
+    &:hover {
+        filter: brightness(80%);
+    }
+`;

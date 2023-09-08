@@ -151,9 +151,11 @@ export function Register(){
                             )}
                         </ButtonRegister>
                         
+                        {/* 
                         <StyledLinkButton to="/">
                             Já tem uma conta? faça login
                         </StyledLinkButton>
+                        */}
                         
                     </FormRegister>
     

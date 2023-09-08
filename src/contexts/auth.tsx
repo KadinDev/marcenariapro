@@ -46,6 +46,7 @@ export type User = {
     instagram?: string;
     facebook?: string;
     about?: string;
+    vip: boolean;
 }
 
 type AuthProviderProps = {
@@ -100,9 +101,17 @@ export function AuthProvider( {children} : AuthProviderProps ){
 
             if(userDocSnapshot.exists()){
                 const userData = userDocSnapshot.data() as User
-                setUser(userData)
-                localStorage.setItem(MARCENARIA_COLLECTION, JSON.stringify(userData))
-                toast.success(`Bem vindo ${userData.name}`)
+
+                //verificar se o usuario é Vip
+                if(userData.vip === true){
+                    setUser(userData)
+                    localStorage.setItem(MARCENARIA_COLLECTION, JSON.stringify(userData))
+                    toast.success(`Bem vindo ${userData.name}`)
+                }
+                else {
+                    toast.error('Assinatura expirada, revise seu pagamento.')
+                }
+
             }
             setIsLogging(false)
             
@@ -145,6 +154,7 @@ export function AuthProvider( {children} : AuthProviderProps ){
                 facebook: '',
                 about: '',
                 createdUser: new Date(),
+                vip: true
             }
             // passe o novo usuario para o documento 'users'
             await setDoc(userDocRef, userData)

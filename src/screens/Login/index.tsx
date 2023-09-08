@@ -8,7 +8,8 @@ import {
     ContentForm,
     FormLogin,
     ButtonLogin,
-    StyledLinkButton
+    StyledLinkButton,
+    StyledLinkButtonRegister
 } from './styles'
 
 import logo from '../../assets/logoblack.png'
@@ -170,12 +171,18 @@ export function Login(){
                         <span onClick={() => setIsPasswordModalOpen(true) }>
                             Esqueceu a senha?
                         </span>
-                        
+                        {/* 
                         <StyledLinkButton 
                             to="/register"
                         >
                             criar conta
                         </StyledLinkButton>
+                        */}
+                        <StyledLinkButtonRegister
+                            href="https://api.whatsapp.com/send?phone=5588993723747&text=Ol%C3%A1,%20gostaria%20de%20saber%20mais%20sobre%20o%20cadastro%20no%20Marcenaria%20Pro." target='_blank'
+                        >
+                            criar conta
+                        </StyledLinkButtonRegister>
                     </FormLogin>
 
                 </ContentForm>

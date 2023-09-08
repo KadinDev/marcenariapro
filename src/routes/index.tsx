@@ -14,7 +14,7 @@ import { defaultTheme } from '../styles/themes'
 
 
 import { Login } from '../screens/Login'
-import { Register } from '../screens/Register'
+//import { Register } from '../screens/Register'
 
 import { AuthContext } from '../contexts/auth'
 import { UserRoutes } from './userRoutes'
@@ -31,7 +31,7 @@ export function Routes(){
                         :
                         <Switch>
                             <Route path="/" element={ <Login /> } />
-                            <Route path="/register" element={ <Register/> } />
+                            {/* <Route path="/register" element={ <Register/> } /> */}
 
                             <Route path='/*' element={<Navigate to='/' />}  />
                         </Switch>

@@ -32,7 +32,7 @@ export function UserRoutes(){
             <Route path='/perfilmarcenaria' element={ <Profile/> } />
 
             <Route path='/login' element={<Navigate to='/' />}  />
-            <Route path='/register' element={<Navigate to='/' />}  />
+            {/* <Route path='/register' element={<Navigate to='/' />}  /> */}
         </Routes>
         </>
     )

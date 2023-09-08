@@ -10,7 +10,8 @@ import {
 } from './styles'
 
 import { AiOutlineUsergroupAdd, AiOutlineCar, AiOutlineWallet } from 'react-icons/ai'
-import { AvatarUser } from '../../components/AvatarUser';
+import { MdVerified } from 'react-icons/md'
+import { AvatarUser } from '../../components/AvatarUser'
 import { AuthContext } from '../../contexts/auth'
 import { Load } from '../../components/Load'
 import { CardDashboard } from '../../components/CardDashboard'
@@ -41,7 +42,7 @@ export function Dashboard(){
     return (
         <Container>
             <Header>
-                <TitleHeader> {user?.name} </TitleHeader>
+                <TitleHeader> {user?.name} <span> <MdVerified size={20} /> </span> </TitleHeader>
                 <AvatarUser avatar={user?.avatarUrl ? user.avatarUrl : logo} />
             </Header>
 
