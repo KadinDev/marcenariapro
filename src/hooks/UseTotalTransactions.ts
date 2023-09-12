@@ -65,13 +65,11 @@ export function useTotalIncome(user: User | null){
                 setTotalIncome(total)
             })
         }
-        /*
-            return () => {
-                if(unsubscribe){
-                    unsubscribe
-                }
+        return () => {
+            if (unsubscribe) {
+              unsubscribe() // Chame a função de cancelamento quando o componente for desmontado
             }
-        */
+        }
     },[user])
 
     return totalIncome

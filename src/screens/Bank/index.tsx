@@ -66,6 +66,7 @@ export function Bank(){
     useEffect(() => {
         document.title = `${titlePage} Finanças`
         loadTransactions()
+        setSearchText('')
     },[])
 
     

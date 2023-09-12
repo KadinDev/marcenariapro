@@ -7,7 +7,6 @@ import {
     ContentForm,
     FormRegister,
     ButtonRegister,
-    StyledLinkButton,
 } from './styles'
 
 import logo from '../../assets/logoblack.png'
@@ -18,7 +17,6 @@ import { toast } from 'react-toastify'
 import { 
     AiOutlineEye, 
     AiOutlineEyeInvisible,
-    AiOutlineLoading,
     AiFillWindows
 } from 'react-icons/ai'
 

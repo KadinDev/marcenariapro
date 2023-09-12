@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 
 export const Container = styled.div`
     background-color: ${({theme}) => theme.body};

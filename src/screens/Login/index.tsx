@@ -8,7 +8,6 @@ import {
     ContentForm,
     FormLogin,
     ButtonLogin,
-    StyledLinkButton,
     StyledLinkButtonRegister
 } from './styles'
 
@@ -22,7 +21,6 @@ import {
     AiOutlineClose,
     AiOutlineSend,
     AiOutlineInstagram,
-    AiOutlineWhatsApp,
     AiFillWindows
 } from 'react-icons/ai'
 

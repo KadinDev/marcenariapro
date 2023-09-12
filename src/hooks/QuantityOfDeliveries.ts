@@ -17,14 +17,11 @@ export function useTotalDeliveries(user : User | null) {
         setTotalDeliveries(snapshot.docs.length); // Define o tamanho do array de documentos como o total de entregas
       })
     }
-    /*
     return () => {
-      // Limpar o listener quando o componente for desmontado
       if (unsubscribe) {
-        unsubscribe()
+        unsubscribe(); // Chame a função de cancelamento quando o componente for desmontado
       }
     };
-    */
   }, [user])
 
   return totalDeliveries

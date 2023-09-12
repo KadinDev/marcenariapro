@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import { 
     Card,
     Title,
-    Total,
 } from './styles'
 
 import { IconType } from 'react-icons'
