@@ -40,9 +40,8 @@ export const TitleHeader = styled.h1`
 
 export const ContentCardsNote = styled.div`
     width: 100%;
-    height: 100vh;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 5px;
     margin-top: 10px;
     margin-bottom: 100px;
@@ -50,7 +49,7 @@ export const ContentCardsNote = styled.div`
 
 export const CardNote = styled.div`
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     height: 8rem;
     width: 13rem;
     display: flex;
