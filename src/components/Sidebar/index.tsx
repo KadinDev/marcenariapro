@@ -11,10 +11,11 @@ import {
   //SidebarButton
 } from './styles'
 
-import { MdDashboard } from "react-icons/md";
-import { SlLogout } from "react-icons/sl";
-import { RiUserSettingsLine } from "react-icons/ri";
-import { FaUsers, FaPiggyBank, FaTags, FaTruck } from "react-icons/fa";
+import { MdDashboard } from "react-icons/md"
+import { SlLogout } from "react-icons/sl"
+import { RiUserSettingsLine } from "react-icons/ri"
+import { FaUsers, FaPiggyBank, FaTags, FaTruck } from "react-icons/fa"
+import { GiNotebook } from 'react-icons/gi'
 import logo from '../../assets/logo.png'
 import { defaultTheme } from '../../styles/themes'
 
@@ -55,6 +56,9 @@ export function Sidebar() {
 
       case 'FaTruck':
         return <FaTruck size={24} color={defaultTheme.title}/>;
+
+      case 'GiNotebook':
+        return <GiNotebook size={24} color={defaultTheme.title}/>;
       
       default:
         return null;

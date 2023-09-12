@@ -14,6 +14,7 @@ import { Receipts } from '../screens/Receipts'
 import { Catalog } from '../screens/Catalog'
 import { Customers } from '../screens/Customers'
 import { Deliveries } from '../screens/Deliveries'
+import { Notes } from '../screens/Notes'
 import { Profile } from '../screens/Profile'
 
 export function UserRoutes(){
@@ -29,6 +30,7 @@ export function UserRoutes(){
             <Route path='/clientes' element={ <Customers/> } />
             <Route path='/entregas' element={ <Deliveries/> } />
             <Route path='/bank' element={ <Bank/> } />
+            <Route path='/notes' element={ <Notes/> } />
             <Route path='/perfilmarcenaria' element={ <Profile/> } />
 
             <Route path='/login' element={<Navigate to='/' />}  />
