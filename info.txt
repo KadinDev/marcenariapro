@@ -5,11 +5,11 @@ firebase e outras libs NPM para pesquisar
 https://www.npmjs.com/package/firebase
 
 {
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
-      }
-    ]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
   
