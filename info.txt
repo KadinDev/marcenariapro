@@ -4,4 +4,3 @@ npm i
 firebase e outras libs NPM para pesquisar
 https://www.npmjs.com/package/firebase
 
-OK Tudo indo muito bem
