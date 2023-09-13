@@ -1,45 +1,14 @@
 {
-    "routes": [
-      {
-        "src": "/",
-        "destination": "/"
-      },
-      {
-        "src": "/criarorcamento",
-        "destination": "/"
-      },
-      {
-        "src": "/orcamentos",
-        "destination": "/"
-      },
-      {
-        "src": "/recibos",
-        "destination": "/"
-      },
-      {
-        "src": "/catalogo",
-        "destination": "/"
-      },
-      {
-        "src": "/clientes",
-        "destination": "/"
-      },
-      {
-        "src": "/entregas",
-        "destination": "/"
-      },
-      {
-        "src": "/bank",
-        "destination": "/"
-      },
-      {
-        "src": "/notes",
-        "destination": "/"
-      },
-      {
-        "src": "/perfilmarcenaria",
-        "destination": "/"
-      }
+    "redirects": [
+      { "source": "/", "destination": "/", "permanent": false },
+      { "source": "/criarorcamento", "destination": "/", "permanent": false },
+      { "source": "/orcamentos", "destination": "/", "permanent": false },
+      { "source": "/recibos", "destination": "/", "permanent": false },
+      { "source": "/catalogo", "destination": "/", "permanent": false },
+      { "source": "/clientes", "destination": "/", "permanent": false },
+      { "source": "/entregas", "destination": "/", "permanent": false },
+      { "source": "/bank", "destination": "/", "permanent": false },
+      { "source": "/notes", "destination": "/", "permanent": false },
+      { "source": "/perfilmarcenaria", "destination": "/", "permanent": false }
     ]
 }
-  
