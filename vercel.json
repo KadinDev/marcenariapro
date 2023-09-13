@@ -1,5 +1,5 @@
 {
-    "redirects": [
+    "routes": [
       { "src": "/", "destination": "/" },
       { "src": "/criarorcamento", "destination": "/" },
       { "src": "/orcamentos", "destination": "/" },
