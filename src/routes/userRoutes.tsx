@@ -22,8 +22,7 @@ export function UserRoutes(){
         <>
         <Sidebar/>
         <Routes>
-            <Route path='/' element={<Navigate to='/dashboard' />}  />
-            <Route path='/dashboard' element={ <Dashboard/> } />
+            <Route path="/" element={ <Dashboard/> } />
             <Route path='/criarorcamento' element={ <NewBudget/> } />
             <Route path='/orcamentos' element={ <Budgets/> } />
             <Route path='/recibos' element={ <Receipts/> } />
