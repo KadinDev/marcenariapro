@@ -28,14 +28,12 @@ export function useTotalOutcome( user: User | null ){
                 setTotalOutcome(total)
             } )
         }
-        /*
         return () => {
             // Limpar o listener quando o componente for desmontado
             if (unsubscribe) {
                 unsubscribe()
             }
         }
-        */
     },[user])
 
     return totalOuctome
