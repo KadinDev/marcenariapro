@@ -1,6 +1,6 @@
 import {
     Route,
-    Routes as Switch,
+    Routes,
     Navigate
 } from 'react-router-dom'
 
@@ -21,9 +21,8 @@ export function UserRoutes(){
     return (
         <>
         <Sidebar/>
-        <Switch>
-            <Route path='/' element={<Navigate to='/dashboard' />}  />
-            <Route path='/dashboard' element={ <Dashboard/> } />
+        <Routes>
+            <Route path='/' element={ <Dashboard/> } />
             <Route path='/criarorcamento' element={ <NewBudget/> } />
             <Route path='/orcamentos' element={ <Budgets/> } />
             <Route path='/recibos' element={ <Receipts/> } />
@@ -35,7 +34,7 @@ export function UserRoutes(){
             <Route path='/perfilmarcenaria' element={ <Profile/> } />
 
             <Route path='/login' element={<Navigate to='/' />}  />
-        </Switch>
+        </Routes>
         </>
     )
 }

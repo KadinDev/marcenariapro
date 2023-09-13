@@ -1,5 +1,5 @@
 export const links = [
-    { id: '1', path: "/dashboard", text: "Dashboard", icon: 'MdDashboard'},
+    { id: '1', path: "/", text: "Dashboard", icon: 'MdDashboard'},
     { id: '2', path: "/clientes", text: "Clientes", icon: 'FaUsers'},
     { id: '3', path: "/bank", text: "Finanças", icon: 'FaPiggyBank'},
     { id: '4', path: "/orcamentos", text: "Orçamentos", icon: 'FaTags'},
