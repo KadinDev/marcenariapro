@@ -1,7 +1,43 @@
 {
-    "rewrites": [
+    "routes": [
       {
-        "src": "/(.*)",
+        "src": "/",
+        "destination": "/"
+      },
+      {
+        "src": "/criarorcamento",
+        "destination": "/"
+      },
+      {
+        "src": "/orcamentos",
+        "destination": "/"
+      },
+      {
+        "src": "/recibos",
+        "destination": "/"
+      },
+      {
+        "src": "/catalogo",
+        "destination": "/"
+      },
+      {
+        "src": "/clientes",
+        "destination": "/"
+      },
+      {
+        "src": "/entregas",
+        "destination": "/"
+      },
+      {
+        "src": "/bank",
+        "destination": "/"
+      },
+      {
+        "src": "/notes",
+        "destination": "/"
+      },
+      {
+        "src": "/perfilmarcenaria",
         "destination": "/"
       }
     ]
