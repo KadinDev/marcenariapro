@@ -1,5 +1,14 @@
 {
     "rewrites": [
-      {"source": "/(.*)", "destination": "/"}
+      {"source": "/(.*)", "destination": "/"},
+      {"source": "/criarorcamento", "destination": "/criarorcamento"},
+      {"source": "/orcamentos", "destination": "/orcamentos"},
+      {"source": "/recibos", "destination": "/recibos"},
+      {"source": "/catalogo", "destination": "/catalogo"},
+      {"source": "/clientes", "destination": "/clientes"},
+      {"source": "/entregas", "destination": "/entregas"},
+      {"source": "/bank", "destination": "/bank"},
+      {"source": "/notes", "destination": "/notes"},
+      {"source": "/perfilmarcenaria", "destination": "/perfilmarcenaria"}
     ]
 }
