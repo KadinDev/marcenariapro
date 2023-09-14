@@ -21,7 +21,8 @@ import {
     AiOutlineClose,
     AiOutlineSend,
     AiOutlineInstagram,
-    AiFillWindows
+    AiFillWindows,
+    AiOutlineWhatsApp
 } from 'react-icons/ai'
 
 import { MdVerified } from 'react-icons/md'
@@ -120,11 +121,9 @@ export function Login(){
                         <a href="https://www.instagram.com/marcenariapro2023/" target='_blank'>
                             <AiOutlineInstagram size={18} />
                         </a>
-                        {/* 
-                        <a href="https://wa.me/5588996960239" target='_blank'>
+                        <a href="https://wa.me/5588993723747" target='_blank'>
                             <AiOutlineWhatsApp size={18} />
                         </a>
-                        */}
                         
                     </div>
                 </ContentLogo>
@@ -192,7 +191,7 @@ export function Login(){
                 <div className="video-modal">
                     <div className="video-modal-content">
                         <iframe
-                            src="https://www.youtube.com/embed/-JHamN9oCKg"
+                            src="https://www.youtube.com/embed/i2n6qZUnVFg"
                             title="Marcenaria Pro"
                             allowFullScreen
                         ></iframe>

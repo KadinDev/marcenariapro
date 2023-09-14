@@ -195,7 +195,7 @@ export const ContentLogo = styled.div`
 
         a {
             transition: transform 0.2s;
-            background-color: ${props => props.theme.title};
+            
             margin: 5px;
             display: flex;
             flex-direction: row;
@@ -210,11 +210,13 @@ export const ContentLogo = styled.div`
         }
         a:first-child {
             color: ${props => props.theme.red};
-            //box-shadow: 0.5px 0.5px 2px ${props => props.theme.red};
+            background-color: ${props => props.theme.sidebar};
+            box-shadow: 0 0 1px ${props => props.theme.placeholder};
         }
         a:last-child {
-            color: ${props => props.theme['sidebar']};
-            //box-shadow: 0.5px 0.5px 2px ${props => props.theme['title']};
+            color: ${props => props.theme['green-bank']};
+            background-color: ${props => props.theme.sidebar};
+            box-shadow: 0 0 1px ${props => props.theme.placeholder};
         }
     }
 `;
